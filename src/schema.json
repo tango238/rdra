@@ -1,0 +1,411 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://rdra/.schema.json",
+  "title": "RDRA",
+  "description": "Relationship Driven Requirement Analysis",
+  "type": "object",
+  "properties": {
+    "actor": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Actor"
+      }
+    },
+    "internal_system": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InternalSystem"
+      }
+    },
+    "external_system": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ExternalSystem"
+      }
+    },
+    "information": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Information"
+      }
+    },
+    "state": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/State"
+      }
+    },
+    "variation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Variation"
+      }
+    },
+    "condition": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Condition"
+      }
+    },
+    "business": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Business"
+      }
+    },
+    "usecase": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Usecase"
+      }
+    }
+  },
+  "required": [
+    "actor",
+    "internal_system",
+    "information"
+  ],
+  "$defs": {
+    "Actor": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "InternalSystem": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "ExternalSystem": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "Information": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "State": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StateValue"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "group",
+        "value"
+      ]
+    },
+    "StateValue": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "usecase": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "next_state": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "next_state"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "Variation": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value"
+      ]
+    },
+    "Condition": {
+      "type": "object",
+      "anyOf": [
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ]
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "variation": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ]
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "Business": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "buc": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BusinessUseCase"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "buc"
+      ]
+    },
+    "BusinessUseCase": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "activity": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Activity"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "activity"
+      ]
+    },
+    "Activity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "used_by": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "usecase": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "used_by"
+      ]
+    },
+    "Usecase": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "view": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "information": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "condition": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "event": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "view",
+            "information"
+          ]
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "timer": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "information": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "condition": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "event": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "timer",
+            "information"
+          ]
+        }
+      ]
+    }
+  }
+}

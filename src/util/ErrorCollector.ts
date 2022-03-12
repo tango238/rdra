@@ -1,0 +1,69 @@
+import invariant from 'tiny-invariant'
+import { RelationalModel } from '../model/RDRA'
+import { Actor } from '../model/actor/Actor'
+import { InternalSystem } from '../model/actor/InternalSystem'
+import { ExternalSystem } from '../model/actor/ExternalSystem'
+import { State } from '../model/state/State'
+import { Information } from '../model/information/Information'
+import { StateTransition } from '../model/state/StateTransition'
+import { Variation } from '../model/state/Variation'
+import { Condition } from '../model/state/Condition'
+import { Business } from '../model/business/Business'
+import { Usecase } from '../model/usecase/Usecase'
+
+export class ErrorCollector {
+
+  static collect(model: RelationalModel): string[] {
+    let errors: string[] = []
+    if (this.hasError(model.actor)) {
+      errors.push(...model.actor.errors)
+    }
+    if (this.hasError(model.internalSystem)) {
+      invariant(model.internalSystem)
+      errors.push(...model.internalSystem.errors)
+    }
+    if (this.notNullAndHasError(model.externalSystem)) {
+      invariant(model.externalSystem)
+      errors.push(...model.externalSystem.errors)
+    }
+    if (this.hasError(model.information)) {
+      errors.push(...model.information.errors)
+    }
+    if (this.notNullAndHasError(model.state)) {
+      invariant(model.state)
+      errors.push(...model.state.errors)
+    }
+    if (this.notNullAndHasError(model.transition)) {
+      invariant(model.transition)
+      errors.push(...model.transition.errors)
+    }
+    if (this.notNullAndHasError(model.variation)) {
+      invariant(model.variation)
+      errors.push(...model.variation.errors)
+    }
+    if (this.notNullAndHasError(model.condition)) {
+      invariant(model.condition)
+      errors.push(...model.condition.errors)
+    }
+    if (this.notNullAndHasError(model.business)) {
+      invariant(model.business)
+      errors.push(...model.business.errors)
+    }
+    if (this.notNullAndHasError(model.usecase)) {
+      invariant(model.usecase)
+      errors.push(...model.usecase.errors)
+    }
+
+    return errors
+  }
+
+  private static notNullAndHasError(source: ExternalSystem | Business | Variation | Condition | Usecase | State | StateTransition | null): boolean {
+    if (source == null) return false
+    return source.errors.length > 0
+  }
+
+  private static hasError(source: Actor | InternalSystem | Information): boolean {
+    return source.errors.length > 0
+  }
+
+}

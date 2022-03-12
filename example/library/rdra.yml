@@ -1,0 +1,305 @@
+actor:
+  - 会員
+  - 図書館員
+
+internal_system:
+  - 書籍管理システム
+
+external_system:
+  - 書籍通販会社
+
+information:
+  - name: 会員
+    related:
+    - 貸出予約
+  - name: 貸出予約
+    related:
+      - 本
+      - 貸出図書
+  - name: 貸出図書
+    related:
+      - 会員
+      - 蔵書
+  - name: 本
+    related:
+      - 書籍発注
+  - name: 蔵書
+    related:
+      - 書架
+      - 本
+  - name: 書架
+  - name: 書籍発注
+  - name: 取置期限切れ
+    related:
+      - 貸出予約
+
+state:
+  - group: 蔵書の状態
+    value:
+      - name: 貸出中_期限内
+        usecase:
+        - name: 貸出図書の返却を登録する
+          next_state: 在庫中
+        - name: 貸出期限を確認する
+          next_state: 貸出中_期限切れ
+      - name: 貸出中_期限切れ
+        usecase:
+          - name: 貸出図書の返却を登録する
+            next_state: 在庫中
+      - name: 取置中
+        usecase:
+          - name: 蔵書の貸出を登録する
+            next_state: 貸出中_期限内
+          - name: 貸出本の予約・取消をする
+            next_state: 在庫中
+      - name: 在庫中
+        usecase:
+          - name: 蔵書の貸出を登録する
+            next_state: 貸出中_期限内
+          - name: 予約図書を取り置く
+            next_state: 取置中
+
+  - group: Web予約の状態
+    value:
+      - name: 未予約
+        usecase:
+          - name: 貸出本の予約・取消をする
+            next_state: 予約中_未準備
+      - name: 予約中_未準備
+        usecase:
+          - name: 予約図書を取り置く
+            next_state: 予約中_準備完了
+          - name: 貸出本の予約・取消をする
+            next_state: 未予約
+      - name: 予約中_準備完了
+        usecase:
+          - name: 取置図書を消し込む
+            next_state: 未予約
+          - name: 取置期限を確認する
+            next_state: 未予約
+          - name: 貸出本の予約・取消をする
+            next_state: 未予約
+
+business:
+  - name: 貸出・返却
+    buc:
+      - name: 貸出
+        activity:
+          - name: 書架から本を探す
+            used_by:
+              - 図書館員
+          - name: 蔵書を貸出す
+            used_by:
+              - 図書館員
+            usecase:
+              - 蔵書の貸出を登録する
+
+      - name: Web予約
+        activity:
+          - name: 貸出予約
+            used_by:
+              - 図書館員
+            usecase:
+              - 貸出本の予約・取消をする
+          - name: 予約図書準備
+            used_by:
+              - 図書館員
+            usecase:
+              - 予約図書一覧を出力する
+          - name: 予約図書を受け取る
+            used_by:
+              - 会員
+              - 図書館員
+            usecase:
+              - 取置図書を消し込む
+              - 蔵書の貸出を登録する
+
+      - name: 返却
+        activity:
+          - name: 貸出図書を返却する
+            used_by:
+              - 図書館員
+            usecase:
+              - 貸出図書の返却を登録する
+
+  - name: 会員管理
+    buc:
+      - name: 会員登録
+        activity:
+          - name: 会員新規登録
+            used_by:
+              - 会員
+            usecase:
+              - 会員IDを発行する
+
+          - name: 会員の確認
+            used_by:
+              - 図書館員
+            usecase:
+              - 会員カードの発行（再）する
+              - 会員を照会する
+
+      - name: 期限管理
+        activity:
+          - name: 貸出期限確認
+            used_by:
+              - 書籍管理システム
+            usecase:
+              - 貸出期限を確認する
+              - 取置期限を確認する
+
+          - name: 取置図書の返却
+            used_by:
+              - 会員
+            usecase:
+              - 取置を解消する
+
+  - name: 蔵書管理
+    buc:
+      - name: 棚卸
+        activity:
+          - name: 棚卸を行う
+            used_by:
+              - 図書館員
+
+          - name: 書籍補充
+            used_by:
+              - 書籍通販会社
+            usecase:
+              - 書籍を発注する
+
+usecase:
+  - name: 蔵書の貸出を登録する
+    view:
+      - 貸出登録
+    information:
+      - 貸出図書
+      - 蔵書
+      - 貸出予約
+    condition:
+      - 貸出制限
+
+  - name: 貸出本の予約・取消をする
+    view:
+      - 蔵書検索
+      - 貸出予約
+    information:
+      - 蔵書
+      - 貸出予約
+
+  - name: 予約図書一覧を出力する
+    view:
+      - 貸出予約一覧
+    information:
+      - 貸出予約
+    condition:
+      - 貸出予約一覧出力条件
+
+  - name: 予約図書を取り置く
+    view:
+      - 貸出準備登録
+    information:
+      - 貸出予約
+      - 蔵書
+
+  - name: 取置図書を消し込む
+    view:
+      - 予約消込
+    information:
+      - 貸出予約
+
+  - name: 貸出図書の返却を登録する
+    view:
+      - 返却登録
+    information:
+      - 貸出図書
+      - 蔵書
+      - 貸出予約
+
+  - name: 会員IDを発行する
+    view:
+      - 会員登録
+    information:
+      - 会員
+
+  - name: 会員カードの発行（再）する
+    view:
+      - 会員カード
+    information:
+      - 会員
+
+  - name: 会員を照会する
+    view:
+      - 会員検索
+    information:
+      - 会員
+
+  - name: 貸出期限を確認する
+    timer:
+      - 日次
+    information:
+      - 貸出図書
+    event:
+      - 貸出期限切れ通知メール
+    condition:
+      - 貸出期限
+
+  - name: 取置期限を確認する
+    timer:
+      - 日次
+    information:
+      - 貸出予約
+      - 取置期限切れ
+    condition:
+      - 取置期限
+
+  - name: 取置を解消する
+    view:
+      - 取置解消
+    information:
+      - 取置期限切れ
+
+  - name: 書籍を発注する
+    view:
+      - 書籍発注
+    information:
+      - 書籍発注
+      - 本
+    event:
+      - 書籍発注依頼
+
+variation:
+  - name: 本種別
+    value:
+      - 書籍
+      - 館内閲覧用書籍
+      - DVD
+      - CD
+
+  - name: 遅延日数
+    value:
+      - 遅延日数＜３日
+      - 遅延日数＜７日
+      - 遅延日数が７日以上
+
+  - name: 会員種別
+    value:
+      - 大人
+      - 子供
+
+condition:
+  - name: 貸出期限
+    description: 貸出日＋１４日
+
+  - name: 取置期限
+    description: 貸出準備完了日＋７日
+
+  - name: 貸出制限
+    description: 返却が遅延している場合の貸出制限
+    variation:
+      - 遅延日数
+      - 会員種別
+
+  - name: 貸出予約一覧出力条件
+    description: 貸出予約の内「在庫あり」の本を一覧に出す
+    state: 蔵書の状態

@@ -1,0 +1,38 @@
+actor:
+  - 社員
+
+internal_system:
+  - 出退勤管理システム
+
+information:
+  - name: 社員
+  - name: 出退勤記録
+
+state:
+  - group: 出退勤
+    value:
+      - name: 出勤
+      usecase:
+          - name: 退勤する
+            next_state: 退勤
+      - name: 退勤
+        usecase:
+          - name: 出勤する
+            next_state: 出勤
+
+usecase:
+  - name: 出勤する
+    information:
+      - 出退勤記録
+    view:
+      - 出勤記録
+  - name: 退勤する
+    information:
+      - 出退勤記録
+    view:
+      - 退勤記録
+  - name: 社員登録
+    information:
+      - 社員
+    view:
+      - 社員管理
