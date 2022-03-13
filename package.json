@@ -19,7 +19,7 @@
     "RDRA"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsc --build",
     "clean": "tsc --build --clean",
     "format": "prettier --loglevel warn --write \"**/*.{ts,js,json,yaml}\"",
