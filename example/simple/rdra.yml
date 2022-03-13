@@ -12,7 +12,7 @@ state:
   - group: 出退勤
     value:
       - name: 出勤
-      usecase:
+        usecase:
           - name: 退勤する
             next_state: 退勤
       - name: 退勤

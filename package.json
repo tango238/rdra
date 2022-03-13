@@ -1,6 +1,6 @@
 {
   "name": "rdra",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "Go Tanaka <tanago3@gmail.com>",
   "main": "build/cli.js",
@@ -20,8 +20,8 @@
   ],
   "scripts": {
     "test": "jest",
-    "build": "tsc --build",
-    "clean": "tsc --build --clean",
+    "build": "tsc",
+    "clean": "tsc --clean",
     "format": "prettier --loglevel warn --write \"**/*.{ts,js,json,yaml}\"",
     "format:check": "prettier --loglevel warn --check \"**/*.{ts,js,json,yaml}\"",
     "lint": "eslint \"src/**/*.ts\" --fix",

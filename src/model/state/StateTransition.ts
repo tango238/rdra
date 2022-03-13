@@ -51,7 +51,7 @@ export class StateTransition {
   }
 }
 
-class StateGroup {
+export class StateGroup {
   private readonly _name: string
   private readonly _values: StateTransitionValue[]
 
@@ -69,7 +69,7 @@ class StateGroup {
   }
 }
 
-class StateTransitionValue {
+export class StateTransitionValue {
   private readonly _name: string
   private readonly _usecase: StateTransitionUsecase[] | null
 
@@ -87,7 +87,7 @@ class StateTransitionValue {
   }
 }
 
-class StateTransitionUsecase {
+export class StateTransitionUsecase {
   private readonly _name: string
   private readonly _nextState: string
 
