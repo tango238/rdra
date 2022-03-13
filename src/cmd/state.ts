@@ -1,12 +1,9 @@
 import { BaseBuilder, BaseHandler } from './util/types'
 import { checkFileExists, getSourcePath } from './util/options'
 import { Yaml } from '../util/Yaml'
-import { br, error, info, title } from './output/console'
+import { error } from './output/console'
 import { RDRA } from '../model/RDRA'
 import { ErrorCollector } from '../util/ErrorCollector'
-import chalk from 'chalk'
-import { StateTransition, StateTransitionUsecase } from '../model/state/StateTransition'
-import invariant from 'tiny-invariant'
 import { outputAllState } from './output/state'
 
 export const command = 'state [value]'

@@ -15,14 +15,31 @@ $ cat rdra.yml
 $ rdra -f rdra.yml list
 ```
 
+### JSON Schema
+
+See `src/schema.json`
+
+### Editor Setting
 **VS Code**
+
+https://code.visualstudio.com/docs/languages/json
 
 **IntelliJ**
 
+https://pleiades.io/help/idea/json.html
 
-### YAML Format
+### Available Commands
+```shell
+$ rdra -f [file] actor
+$ rdra -f [file] usecase
+$ rdra -f [file] usecase -b [BUC]
+$ rdra -f [file] state
+$ rdra -f [file] view
+$ rdra -f [file] list
+```
 
-See `src/schema.json`
+
+
 
 ### Development
 

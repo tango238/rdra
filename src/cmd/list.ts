@@ -7,6 +7,8 @@ import { title, info, br, error } from './output/console'
 import { checkFileExists, getSourcePath } from './util/options'
 import { outputAllActors } from './output/actor'
 import { outputAllUseCases } from './output/usecase'
+import { outputAllState } from './output/state'
+import { outputAllView } from './output/view'
 
 export const command = 'list [value]'
 export const desc = 'List all items in the model'
@@ -58,27 +60,7 @@ export const handler: BaseHandler = async (argv) => {
 
   // ------------------------------
   // State
-  if (model.state) {
-    title("状態")
-    model.state.instances.forEach(it => {
-      info(`${it.name}: [${it.values.join(', ')}]`)
-    })
-    br()
-
-    if (model.transition) {
-      title("状態遷移")
-      model.transition.instances.forEach(it => {
-        info(chalk.green(it.name))
-        it.values.map(value => {
-          info(`${value.name}`)
-          value.usecase ? value.usecase.forEach(uc => {
-            info(`  → ${uc.nextState}: ${uc.name}`)
-          }) : null
-        })
-        br()
-      })
-    }
-  }
+  outputAllState(model)
 
   // ------------------------------
   // Business
@@ -89,26 +71,15 @@ export const handler: BaseHandler = async (argv) => {
       business.buc.forEach(buc => {
         info(`${buc.name}: ${buc.activity.map(act => act.name).join(' → ')}`)
       })
-
       br()
     })
   }
 
   // ------------------------------
   // Usecase
-  if (model.usecase) {
-    outputAllUseCases(model)
-  }
+  outputAllUseCases(model)
 
   // ------------------------------
   // View
-  if (model.usecase) {
-    title("画面")
-    model.usecase.instances.forEach(uc => {
-      uc.view ? uc.view.forEach(v => {
-        info(v)
-        info(`  → ${uc.information.join(', ')}`)
-      }) : null
-    })
-  }
+  outputAllView(model)
 }
