@@ -1,6 +1,6 @@
 {
   "name": "rdra",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "author": "Go Tanaka <tanago3@gmail.com>",
   "main": "build/cli.js",
