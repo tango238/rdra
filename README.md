@@ -27,7 +27,7 @@ See `src/schema.json`
 ### Development
 
 ```shell
-$ git clone xxx/rdra.git
+$ git clone https://github.com/tango238/rdra.git
 $ cd rdra
 $ tsc
 $ npm link

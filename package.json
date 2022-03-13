@@ -15,6 +15,7 @@
     "/build"
   ],
   "keywords": [
+    "cli",
     "RDRA"
   ],
   "scripts": {
