@@ -2,10 +2,15 @@
 
 ### About this CLI
 
+### Install
+```shell
+$ npm install -g rdra
+```
+
 ### Getting started
 
 ```shell
-$ npx rdra init
+$ rdra init
 $ cat rdra.yml
 $ rdra -f rdra.yml list
 ```

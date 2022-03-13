@@ -17,7 +17,7 @@ yargs(hideBin(process.argv))
   )
   .strict()
   .alias({ h: 'help' })
-  .epilogue('For more information, check https://xxx')
+  .epilogue('For more information, check https://github.com/tango238/rdra')
   .fail(handleError).argv
 
 
