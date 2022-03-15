@@ -1,6 +1,7 @@
 import { expect, test } from '@jest/globals'
 import { Information } from './Information'
 import { JsonSchemaInformation } from '../JsonSchema'
+import { Variation } from '../variation/Variation'
 
 test('resolve with no error', () => {
   const source: JsonSchemaInformation[] = [
@@ -37,3 +38,39 @@ test('resolve with error - related to no registration name', () => {
   const resolved = Information.resolve(source, null)
   expect(resolved.errors.length).toBe(1)
 })
+
+test('resolve with variation - no error', () => {
+  const source: JsonSchemaInformation[] = [
+    { name: 'info 1', related: ['info 2'], variation: 'variation 1' },
+    { name: 'info 2' }
+  ]
+  const resolved = Information.resolve(source, variation())
+  expect(resolved.errors.length).toBe(0)
+})
+
+test('resolve with variation - error occurs', () => {
+  const source: JsonSchemaInformation[] = [
+    { name: 'info 1', related: ['info 2'], variation: 'variation not exist' },
+    { name: 'info 2' }
+  ]
+  const resolved = Information.resolve(source, variation())
+  expect(resolved.errors.length).toBe(1)
+})
+
+const variation = () => {
+  const source = [
+    {
+      name: 'variation 1',
+      value: [
+        'value1', 'value2', 'value3'
+      ]
+    },
+    {
+      name: 'variation 2',
+      value: [
+        'value1', 'value2', 'value3'
+      ]
+    }
+  ]
+  return Variation.resolve(source)
+}
