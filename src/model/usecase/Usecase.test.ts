@@ -2,8 +2,8 @@ import { expect, test } from '@jest/globals'
 import { JsonSchemaUsecase } from '../JsonSchema'
 import { Usecase } from './Usecase'
 import { Information } from '../information/Information'
-import { Condition } from '../state/Condition'
-import { Variation } from '../state/Variation'
+import { Condition } from '../condition/Condition'
+import { Variation } from '../variation/Variation'
 import { State } from '../state/State'
 
 
@@ -60,7 +60,7 @@ const information = () => {
   return Information.resolve([
     { name: 'info 1', related: ['info 2'] },
     { name: 'info 2', related: ['info 1'] }
-  ])
+  ], null)
 }
 
 const condition = () => {

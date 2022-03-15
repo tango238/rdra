@@ -3,8 +3,8 @@ import { Business } from './Business'
 import { JsonSchemaBusiness, JsonSchemaState } from '../JsonSchema'
 import { Usecase } from '../usecase/Usecase'
 import { Information } from '../information/Information'
-import { Variation } from '../state/Variation'
-import { Condition } from '../state/Condition'
+import { Variation } from '../variation/Variation'
+import { Condition } from '../condition/Condition'
 import { State } from '../state/State'
 import { Actor } from '../actor/Actor'
 import { InternalSystem } from '../actor/InternalSystem'
@@ -204,7 +204,7 @@ const information = () => {
   return Information.resolve([
     { name: 'info 1', related: ['info 2'] },
     { name: 'info 2', related: ['info 1'] }
-  ])
+  ], null)
 }
 
 const actor = () => {

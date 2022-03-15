@@ -4,8 +4,8 @@ import { State } from './State'
 import { StateTransition } from './StateTransition'
 import { Usecase } from '../usecase/Usecase'
 import { Information } from '../information/Information'
-import { Condition } from './Condition'
-import { Variation } from './Variation'
+import { Condition } from '../condition/Condition'
+import { Variation } from '../variation/Variation'
 
 
 test('resolve with error - state is duplicate', () => {
@@ -66,7 +66,7 @@ const information = () => {
   return Information.resolve([
     { name: 'info 1', related: ['info 2'] },
     { name: 'info 2', related: ['info 1'] }
-  ])
+  ], null)
 }
 
 const variation = () => {
