@@ -39,8 +39,6 @@ $ rdra -f [file] list
 ```
 
 
-
-
 ### Development
 
 ```shell
@@ -48,4 +46,11 @@ $ git clone https://github.com/tango238/rdra.git
 $ cd rdra
 $ tsc
 $ npm link
+```
+
+### Release
+
+```shell
+$ tsc
+$ npm publish
 ```
