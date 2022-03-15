@@ -52,5 +52,8 @@ $ npm link
 
 ```shell
 $ tsc
+$ npm run test
 $ npm publish
+$ npm install
+$ git push origin main
 ```
