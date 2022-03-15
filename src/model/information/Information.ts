@@ -2,6 +2,7 @@ import '../array.extensions'
 import invariant from 'tiny-invariant'
 import { ErrorReport } from '../RDRA'
 import { JsonSchemaInformation } from '../JsonSchema'
+import { Variation } from '../variation/Variation'
 
 export class Information {
   private readonly _names: string[] = []
@@ -14,12 +15,8 @@ export class Information {
     this._instances = instances
   }
 
-  static resolve(source: JsonSchemaInformation[]): Information {
-    const instances = source.map(it => {
-      const description = it.description ?? ''
-      const related = it.related ?? []
-      return new InformationInstance(it.name, description, related)
-    })
+  static resolve(source: JsonSchemaInformation[], variation: Variation | null): Information {
+    const instances = source.map(it => new InformationInstance(it.name, it.description ?? null, it.related, it.variation))
     const information = new Information(instances)
     const counted = information._names.countValues()
     counted.forEach((value, key) => {
@@ -34,19 +31,23 @@ export class Information {
           information._errors.push(`情報[${instance.name}]に定義されている関連[${it}]が未定義です。`)
         }
       })
+      if (variation && instance.variation) {
+        if (!variation.names.includes(instance.variation)) {
+          information._errors.push(`情報[${instance.name}]に定義されているバリエーション[${instance.variation}]が未定義です。`)
+        }
+      }
     })
     return information
-  }
-
-  add(instance: InformationInstance) {
-    invariant(this._names.includes(instance.name), `NotUnique[${instance.name}]`)
-    this._instances.push(instance)
   }
 
   get(name: string): InformationInstance {
     const result = this._instances.find(i => i.name == name)
     invariant(result, `NotFound[${name}]`)
     return result
+  }
+
+  get instances(): InformationInstance[] {
+    return this._instances
   }
 
   get names(): string[] {
@@ -60,24 +61,30 @@ export class Information {
 
 export class InformationInstance {
   private readonly _name: string
-  private readonly _description: string
+  private readonly _description: string | null
   private readonly _related: string[]
+  private readonly _variation: string
 
-  constructor(name: string, description: string, related: string[]) {
+  constructor(name: string, description: string | null, related: string[] = [], variation: string = '') {
     this._name = name
     this._description = description
     this._related = related
+    this._variation = variation
   }
 
   get name(): string {
     return this._name
   }
 
-  get description(): string {
+  get description(): string | null {
     return this._description
   }
 
   get related(): string[] {
     return this._related
+  }
+
+  get variation(): string {
+    return this._variation
   }
 }

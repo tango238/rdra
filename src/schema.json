@@ -134,6 +134,9 @@
           "items": {
             "type": "string"
           }
+        },
+        "variation": {
+          "type": "string"
         }
       },
       "additionalProperties": false,

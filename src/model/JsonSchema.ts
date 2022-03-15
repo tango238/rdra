@@ -29,6 +29,7 @@ export type JsonSchemaInformation = {
   name: string
   description?: string
   related?: string[]
+  variation?: string
 }
 
 export type JsonSchemaUsecase = {

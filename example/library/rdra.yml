@@ -23,6 +23,7 @@ information:
   - name: 本
     related:
       - 書籍発注
+    variation: 本種別
   - name: 蔵書
     related:
       - 書架

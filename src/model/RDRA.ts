@@ -43,16 +43,16 @@ export class RDRA {
     }
 
     // --------------------------------------
+    // バリエーション
+    const variation = source.variation ? Variation.resolve(source.variation) : null
+
+    // --------------------------------------
     // 情報
-    const information = Information.resolve(source.information)
+    const information = Information.resolve(source.information, variation)
 
     // --------------------------------------
     // 状態
     const state = source.state ? State.resolve(source.state) : null
-
-    // --------------------------------------
-    // バリエーション
-    const variation = source.variation ? Variation.resolve(source.variation) : null
 
     // --------------------------------------
     // 条件
