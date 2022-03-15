@@ -2,7 +2,7 @@ import '../array.extensions'
 import invariant from 'tiny-invariant'
 import { ErrorReport } from '../RDRA'
 import { JsonSchemaUsecase } from '../JsonSchema'
-import { Condition } from '../state/Condition'
+import { Condition } from '../condition/Condition'
 import { Information } from '../information/Information'
 
 export class Usecase {

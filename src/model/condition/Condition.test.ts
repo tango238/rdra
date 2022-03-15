@@ -1,8 +1,8 @@
 import { expect, test } from '@jest/globals'
 import { Condition } from './Condition'
 import { JsonSchemaCondition } from '../JsonSchema'
-import { State } from './State'
-import { Variation } from './Variation'
+import { State } from '../state/State'
+import { Variation } from '../variation/Variation'
 
 test('resolve', () => {
   const source: JsonSchemaCondition[] = [

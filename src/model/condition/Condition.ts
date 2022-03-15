@@ -1,8 +1,8 @@
 import invariant from 'tiny-invariant'
 import { ErrorReport } from '../RDRA'
 import { JsonSchemaCondition } from '../JsonSchema'
-import { State } from './State'
-import { Variation } from './Variation'
+import { State } from '../state/State'
+import { Variation } from '../variation/Variation'
 
 export class Condition {
   private readonly _names: string[] = []
