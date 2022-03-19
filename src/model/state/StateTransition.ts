@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import '../array.extensions'
 import { State } from './State'
 import { Usecase } from '../usecase/Usecase'
@@ -10,7 +11,7 @@ export class StateTransition {
   private readonly _errors: ErrorReport = []
 
   constructor(instances: StateGroup[]) {
-    // invariant(this._names.length == 0, "AlreadyInitialized")
+    invariant(this._names.length == 0, "状態遷移はすでに初期化済みです。")
     this._instances = instances
   }
 

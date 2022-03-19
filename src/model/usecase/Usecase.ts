@@ -11,7 +11,7 @@ export class Usecase {
   private readonly _errors: ErrorReport = []
 
   constructor(instances: UsecaseInstance[]) {
-    invariant(this._names.length == 0, "AlreadyInitialized")
+    invariant(this._names.length == 0, "バリエーションはすでに初期化済みです。")
     this._names = instances.map(i => i.name)
     this._instances = instances
   }

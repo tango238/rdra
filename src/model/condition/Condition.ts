@@ -10,7 +10,7 @@ export class Condition {
   private readonly _errors: ErrorReport = []
 
   constructor(instances: ConditionInstance[]) {
-    // invariant(this._names.length == 0, "AlreadyInitialized")
+    invariant(this._names.length == 0, "条件はすでに初期化済みです。")
     this._names = instances.map(i => i.name)
     this._instances = instances
   }

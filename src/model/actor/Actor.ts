@@ -9,7 +9,7 @@ export class Actor {
   private readonly _errors: ErrorReport = []
 
   private constructor(instances: ActorInstance[]) {
-    // invariant(this._names.length == 0, "AlreadyInitialized")
+    invariant(this._names.length == 0, "アクターはすでに初期化済みです。")
     this._names = instances.map(i => i.name)
     this._instances = instances
   }
@@ -18,19 +18,14 @@ export class Actor {
     const actor = new Actor(source.map(it => new ActorInstance(it.name, it.description ?? null)))
     const counted = actor._names.countValues()
     counted.forEach((value, key) => {
-      if (value > 1) actor._errors.push(`Actor[${key}] is duplicated`)
+      if (value > 1) actor._errors.push(`アクター[${key}]が重複しています。`)
     })
     return actor
   }
 
-  add(instance: ActorInstance) {
-    invariant(this._names.find(k => k == instance.name), `NotUnique[${instance.name}]`)
-    this._instances.push(instance)
-  }
-
   get(name: string): ActorInstance {
     const result = this._instances.find(i => i.name == name)
-    invariant(result, `NotFound[${name}]`)
+    invariant(result, `アクター[${name}]が見つかりません。`)
     return result
   }
 

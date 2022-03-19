@@ -9,7 +9,7 @@ export class InternalSystem {
   private readonly _errors: ErrorReport = []
 
   private constructor(instances: InternalSystemInstance[]) {
-    // invariant(this._names.length == 0, "AlreadyInitialized")
+    invariant(this._names.length == 0, "内部システムはすでに初期化済みです。")
     this._names = instances.map(i => i.name)
     this._instances = instances
   }
@@ -18,19 +18,14 @@ export class InternalSystem {
     const system = new InternalSystem(source.map(it => new InternalSystemInstance(it.name, it.description ?? null)))
     const counted = system._names.countValues()
     counted.forEach((value, key) => {
-      if (value > 1) system._errors.push(`InternalSystem[${key}] is duplicated`)
+      if (value > 1) system._errors.push(`内部システム[${key}]が重複しています。`)
     })
     return system
   }
 
-  add(instance: InternalSystemInstance) {
-    invariant(this._names.find(k => k == instance.name), `NotUnique[${instance.name}]`)
-    this._instances.push(instance)
-  }
-
   get(name: string): InternalSystemInstance {
     const result = this._instances.find(i => i.name == name)
-    invariant(result, `NotFound[${name}]`)
+    invariant(result, `内部システム[${name}]が見つかりません`)
     return result
   }
 

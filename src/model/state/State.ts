@@ -12,7 +12,7 @@ export class State {
   private readonly _errors: ErrorReport = []
 
   constructor(instances: StateGroupInstance[], stateNamesByGroup: StateNamesByGroup) {
-    // invariant(this._groups.length == 0, `AlreadyInitialized`)
+    invariant(this._groups.length == 0, "状態はすでに初期化済みです。")
     this._groups = instances.map(i => i.name)
     this._names = stateNamesByGroup
     this._instances = instances
