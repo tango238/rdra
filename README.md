@@ -48,10 +48,16 @@ $ tsc
 $ npm link
 ```
 
+Update mermaid.js
+
+```shell
+$ cp ./node_modules/mermaid/dist/mermaid.min.js ./src/cmd/mermaid
+```
+
 ### Release
 
 ```shell
-$ tsc
+$ npm run build
 $ npm run test
 $ npm publish
 $ npm install

@@ -9,5 +9,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "exclude": [
+    "script/**/*",
+    "**/node_modules"
+  ]
 }

@@ -6,12 +6,13 @@ import { ErrorReport } from '../RDRA'
 import { JsonSchemaState } from '../JsonSchema'
 
 export class StateTransition {
-  private readonly _names: string[] = []
+  private readonly _groups: string[] = []
   private readonly _instances: StateGroup[]
   private readonly _errors: ErrorReport = []
 
   constructor(instances: StateGroup[]) {
-    invariant(this._names.length == 0, "状態遷移はすでに初期化済みです。")
+    invariant(this._groups.length == 0, "状態遷移はすでに初期化済みです。")
+    this._groups = instances.map(i => i.name)
     this._instances = instances
   }
 
@@ -22,7 +23,6 @@ export class StateTransition {
     const stateTransition = source.map(it => {
       const group = it.group
       const transitionValue = it.value.map(tv => {
-
         const values = tv.usecase ? tv.usecase.map(uc => {
           const usecaseName = uc.name
           const nextState = uc.next_state
@@ -39,8 +39,8 @@ export class StateTransition {
     return transition
   }
 
-  get names(): string[] {
-    return this._names
+  get groups(): string[] {
+    return this._groups
   }
 
   get instances(): StateGroup[] {
