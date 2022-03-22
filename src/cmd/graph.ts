@@ -1,7 +1,4 @@
-import path from 'path'
 import * as fs from 'fs'
-import puppeteer from 'puppeteer'
-import MermaidAPI from 'mermaid/mermaidAPI'
 import { BaseBuilder, BaseHandler } from './util/types'
 import { checkFileExists, getSourcePath } from './util/options'
 import { Yaml } from '../util/Yaml'
@@ -9,6 +6,7 @@ import { error } from './output/console'
 import { RDRA } from '../model/RDRA'
 import { ErrorCollector } from '../util/ErrorCollector'
 import { StateGroup } from '../model/state/StateTransition'
+import { heredoc } from '../util/heredoc'
 
 export const command = 'graph [value]'
 export const desc = 'Generate relational graphs'
@@ -68,34 +66,32 @@ export const handler: BaseHandler = async (argv) => {
     })
   }
 }
-
 const outputStateDiagram = async (group:StateGroup) => {
-  let stateDiagram:string[] = ['stateDiagram-v2']
- group.values.forEach(value => {
+  const vizRenderStringSync = require("@aduh95/viz.js/sync")
+
+  let stateDiagram:string[] = []
+  group.values.forEach(value => {
     value.usecase?.forEach(uc => {
-      stateDiagram.push(`  ${value.name} --> ${uc.nextState}: ${uc.name}`)
+      stateDiagram.push(`  ${value.name} -> ${uc.nextState} [label = "${uc.name}"];`)
     })
   })
-  const code = stateDiagram.join('\n')
-  await parseMermaid(code, `output/${group.name}.svg`)
-}
+  const edges = stateDiagram.join('\n')
+  const code = heredoc`
+digraph {
+  graph [
+    charset = "UTF-8";
+    label = "${group.name}"
+  ];
+  node [
+    shape = box
+  ];
+   
+  edge [
+    fontsize = 9
+  ];
 
-const parseMermaid = async (code: string, output: string) => {
-  const browser = await puppeteer.launch({ headless: true })
-  const page = await browser.newPage()
-  await page.goto(`file://${path.join(__dirname, '/mermaid/index.html')}`)
-  const svg = await page.evaluate(async (code: string) => {
-      const wnd = (window as any as Window & {
-        mermaid: { mermaidAPI: typeof MermaidAPI }
-      })
-      wnd.mermaid.mermaidAPI.initialize({})
+${edges}
+}`
 
-      return await new Promise<string>((ok) =>
-        wnd.mermaid.mermaidAPI.render('render', code, ok))
-    },
-    code
-  )
-  await browser.close()
-  //console.log(svg)
-  fs.writeFileSync(output, svg)
+  fs.writeFileSync(`output/${group.name}.svg`, vizRenderStringSync(code))
 }
