@@ -19,9 +19,3 @@ yargs(hideBin(process.argv))
   .alias({ h: 'help' })
   .epilogue('For more information, check https://github.com/tango238/rdra')
   .fail(handleError).argv
-
-
-// RDRA
-// const cli = new CommandLineFacade()
-// const errors = cli.run(filePath)
-// console.log(errors)

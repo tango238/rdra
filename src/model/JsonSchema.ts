@@ -1,6 +1,6 @@
 export type JsonSchema = {
+  system: JsonSchemaSystem | string
   actor: (JsonSchemaActor | string)[]
-  internal_system: (JsonSchemaInternalSystem | string)[]
   external_system: (JsonSchemaExternalSystem | string)[] | null
   information: JsonSchemaInformation[]
   usecase: JsonSchemaUsecase[] | null
@@ -10,17 +10,17 @@ export type JsonSchema = {
   condition: JsonSchemaCondition[] | null
 }
 
+export type JsonSchemaSystem = {
+  name: string
+  description?: string | null
+}
+
 export type JsonSchemaActor = {
   name: string
   description?: string | null
 }
 
 export type JsonSchemaExternalSystem = {
-  name: string
-  description?: string | null
-}
-
-export type JsonSchemaInternalSystem = {
   name: string
   description?: string | null
 }

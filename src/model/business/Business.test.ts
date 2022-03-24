@@ -7,7 +7,7 @@ import { Variation } from '../variation/Variation'
 import { Condition } from '../condition/Condition'
 import { State } from '../state/State'
 import { Actor } from '../actor/Actor'
-import { InternalSystem } from '../actor/InternalSystem'
+import { System } from '../actor/InternalSystem'
 import { ExternalSystem } from '../actor/ExternalSystem'
 
 test('resolve', () => {
@@ -212,7 +212,7 @@ const actor = () => {
 }
 
 const internalSystem = () => {
-  return InternalSystem.resolve([{ name: 'internal system 1' }])
+  return System.resolve([{ name: 'internal system 1' }])
 }
 
 const externalSystem = () => {

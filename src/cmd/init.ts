@@ -16,11 +16,10 @@ export const handler: BaseHandler = async (argv) => {
     path = path + '.' + new Date().toISOString().split('.')[0]
   }
   const content = heredoc`
+system: 出退勤管理システム
+
 actor:
   - 社員
-
-internal_system:
-  - 出退勤管理システム
 
 information:
   - name: 社員

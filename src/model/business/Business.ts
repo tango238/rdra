@@ -4,7 +4,6 @@ import { JsonSchemaBusiness } from '../JsonSchema'
 import { ErrorReport } from '../RDRA'
 import { Actor } from '../actor/Actor'
 import { Usecase } from '../usecase/Usecase'
-import { InternalSystem } from '../actor/InternalSystem'
 import { ExternalSystem } from '../actor/ExternalSystem'
 
 export class Business {
@@ -21,7 +20,6 @@ export class Business {
   static resolve(
     source: JsonSchemaBusiness[],
     actor: Actor,
-    internalSystem: InternalSystem | null,
     externalSystem: ExternalSystem | null,
     usecase: Usecase | null
   ) {
@@ -33,7 +31,7 @@ export class Business {
             const usedByCounted = a.used_by.countValues()
             usedByCounted.forEach((count: number, usedBy: string) => {
               if (count > 1) errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が重複しています。`)
-              if (!actor.names.includes(usedBy) && !internalSystem?.names.includes(usedBy) && !externalSystem?.names.includes(usedBy)) {
+              if (!actor.names.includes(usedBy) && !externalSystem?.names.includes(usedBy)) {
                 errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が未登録です。`)
               }
             })
@@ -85,7 +83,7 @@ export class Business {
   }
 }
 
-class BusinessInstance {
+export class BusinessInstance {
   private readonly _name: string
   private readonly _buc: Buc[]
 

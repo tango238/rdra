@@ -1,5 +1,5 @@
 import { Actor } from './actor/Actor'
-import { InternalSystem } from './actor/InternalSystem'
+import { System } from './actor/System'
 import { ExternalSystem } from './actor/ExternalSystem'
 import { Information } from './information/Information'
 import { Usecase } from './usecase/Usecase'
@@ -13,8 +13,8 @@ import { JsonSchema } from './JsonSchema'
 export type ErrorReport = string[]
 
 export type RelationalModel = {
+  system: System
   actor: Actor
-  internalSystem: InternalSystem
   externalSystem: ExternalSystem | null
   information: Information
   state: State | null
@@ -30,11 +30,11 @@ export class RDRA {
   resolve(source: JsonSchema): RelationalModel {
     // --------------------------------------
     // アクター
+    const srcSystem = typeof source.system == "object" ? source.system : { name: source.system }
+    const system = System.resolve(srcSystem)
+
     const srcActor = source.actor.map(actor => typeof actor == "object" ? actor : { name: actor })
     const actor = Actor.resolve(srcActor)
-
-    const srcInternal = source.internal_system.map(internal => typeof internal == "object" ? internal : { name: internal })
-    const internalSystem = InternalSystem.resolve(srcInternal)
 
     let externalSystem = null
     if (source.external_system) {
@@ -72,11 +72,11 @@ export class RDRA {
     // --------------------------------------
     // 業務
     // BUC -> アクター, UC複合
-    const business = source.business ? Business.resolve(source.business, actor, internalSystem, externalSystem, usecase) : null
+    const business = source.business ? Business.resolve(source.business, actor, externalSystem, usecase) : null
 
     return {
+      system,
       actor,
-      internalSystem,
       externalSystem,
       information,
       state,

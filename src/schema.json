@@ -5,18 +5,30 @@
   "description": "Relationship Driven Requirement Analysis",
   "type": "object",
   "properties": {
+    "system": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
     "actor": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/Actor"
       }
-    },
-    "internal_system": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/InternalSystem"
-      }
-    },
+      },
     "external_system": {
       "type": "array",
       "items": {
@@ -61,30 +73,12 @@
     }
   },
   "required": [
+    "system",
     "actor",
-    "internal_system",
     "information"
   ],
   "$defs": {
     "Actor": {
-      "type": [
-        "object",
-        "string"
-      ],
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "name"
-      ]
-    },
-    "InternalSystem": {
       "type": [
         "object",
         "string"

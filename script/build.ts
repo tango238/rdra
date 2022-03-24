@@ -1,23 +1,8 @@
 import execa from 'execa'
-import * as fs from 'fs'
-
-const buildDir = './build'
-const mermaidDir = './src/cmd/mermaid'
-const files = [
-  'index.html', 'mermaid.min.js'
-]
 
 async function main() {
   console.info(`Building packages`)
   await run('.', `tsc`)
-  if (fs.existsSync(buildDir)) {
-    if (!fs.existsSync(`${buildDir}/cmd/mermaid`)) {
-      fs.mkdirSync(`${buildDir}/cmd/mermaid`)
-    }
-    files.forEach(file => {
-      fs.copyFileSync(`${mermaidDir}/${file}`, `${buildDir}/cmd/mermaid/${file}`)
-    })
-  }
 }
 
 async function run(cwd: string, cmd: string): Promise<execa.ExecaReturnValue<string> | undefined> {

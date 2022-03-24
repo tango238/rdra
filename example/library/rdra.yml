@@ -1,9 +1,8 @@
+system: 書籍管理システム
+
 actor:
   - 会員
   - 図書館員
-
-internal_system:
-  - 書籍管理システム
 
 external_system:
   - 書籍通販会社
