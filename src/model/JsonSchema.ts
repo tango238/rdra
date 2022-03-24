@@ -42,6 +42,7 @@ export type JsonSchemaUsecase = {
 
 export type JsonSchemaBusiness = {
   name: string
+  main_character: string[]
   buc: SourceBucJSON[]
 }
 

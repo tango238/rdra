@@ -13,7 +13,7 @@ export class Business {
   private readonly _errors: ErrorReport = []
 
   constructor(instances: BusinessInstance[]) {
-    invariant(this._names.length == 0, "ビジネスはすでに初期化済みです。")
+    invariant(this._names.length == 0, "業務はすでに初期化済みです。")
     this._names = instances.map(i => i.name)
     this._instances = instances
   }
@@ -27,6 +27,13 @@ export class Business {
   ) {
     const errors: ErrorReport = []
     const instances = source.map(it => {
+      const mainCounted = it.main_character.countValues()
+      mainCounted.forEach((count: number, main: string) => {
+        if (count > 1) errors.push(`業務[${it.name}]に指定されている登場人物[${main}]が重複しています。`)
+        if (system.name != main && !actor.names.includes(main) && !externalSystem?.names.includes(main)) {
+          errors.push(`業務[${it.name}]に指定されているアクター[${main}]が未登録です。`)
+        }
+      })
       const buc = it.buc.map(b => {
         const activity = b.activity.map(a => {
           if (a.used_by) {
@@ -60,13 +67,13 @@ export class Business {
         if (count > 1) errors.push(`BUC[${key}]が重複しています`)
       })
 
-      return new BusinessInstance(it.name, buc)
+      return new BusinessInstance(it.name, it.main_character, buc)
     })
     const business = new Business(instances)
 
     const counted = business._names.countValues()
     counted.forEach((count, key) => {
-      if (count > 1) business._errors.push(`ビジネス[${key}]が重複しています。`)
+      if (count > 1) business._errors.push(`業務[${key}]が重複しています。`)
     })
     if (errors.length > 0) business._errors.push(...errors)
     return business
@@ -87,15 +94,21 @@ export class Business {
 
 export class BusinessInstance {
   private readonly _name: string
+  private readonly _main: string[]
   private readonly _buc: Buc[]
 
-  constructor(name: string, buc: Buc[]) {
+  constructor(name: string, main: string[], buc: Buc[]) {
     this._name = name
+    this._main = main
     this._buc = buc
   }
 
   get name(): string {
     return this._name
+  }
+
+  get main(): string[] {
+    return this._main
   }
 
   get buc(): Buc[] {

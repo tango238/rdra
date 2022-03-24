@@ -24,8 +24,12 @@ const outputActor = (actor: Actor, business: Business | null) => {
     info(`名前          : ${it.name}`)
     info(`説明          : ${it.description ?? '-'}`)
     if (business) {
-      const activities = getActivities(it.name, business)
-      const activity = `アクティビティ: ${activities.map(act => act.name).join(', ')}`
+      const bs = getBusiness(it.name, business)
+      const b = `主な業務      : ${bs.length > 0 ? bs.map(b => b.name).join(', ') : '-'}`
+      info(b)
+
+      const acts = getActivities(it.name, business)
+      const activity = `アクティビティ: ${acts.length > 0 ? acts.map(act => act.name).join(', ') : '-'}`
       info(activity)
     }
     br()
@@ -41,14 +45,21 @@ const outputSystem = (system: System) => {
 const outputExternal = (external: ExternalSystem, business: Business | null) => {
   external.instances.forEach(it => {
     info(`名前          : ${it.name}`)
-    info(`説明          : ${it.description ?? '説明なし'}`)
+    info(`説明          : ${it.description ?? '-'}`)
     if (business) {
-      const activities = getActivities(it.name, business)
-      const body = `アクティビティ: ${activities.map(act => act.name).join(', ')}`
-      info(body)
+      const bs = getBusiness(it.name, business)
+      const b = `主な業務      : ${bs.length > 0 ? bs.map(b => b.name).join(', ') : '-'}`
+      info(b)
+
+      const acts = getActivities(it.name, business)
+      const activity = `アクティビティ: ${acts.length > 0 ? acts.map(act => act.name).join(', ') : '-'}`
+      info(activity)
     }
     br()
   })
+}
+const getBusiness = (actorName: string, business: Business): BusinessInstance[] => {
+  return business.instances.filter(b => b.main.includes(actorName))
 }
 
 const getActivities = (actorName: string, business: Business): Activity[] => {

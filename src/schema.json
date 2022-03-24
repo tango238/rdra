@@ -268,6 +268,12 @@
         "name": {
           "type": "string"
         },
+        "main_character": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "buc": {
           "type": "array",
           "items": {
@@ -277,6 +283,7 @@
       },
       "additionalProperties": false,
       "required": [
+        "main_character",
         "buc"
       ]
     },

@@ -82,6 +82,9 @@ state:
 
 business:
   - name: 貸出・返却
+    main_character:
+      - 会員
+      - 図書館員
     buc:
       - name: 貸出
         activity:
@@ -123,6 +126,9 @@ business:
               - 貸出図書の返却を登録する
 
   - name: 会員管理
+    main_character:
+      - 会員
+      - 図書館員
     buc:
       - name: 会員登録
         activity:
@@ -155,6 +161,8 @@ business:
               - 取置を解消する
 
   - name: 蔵書管理
+    main_character:
+      - 図書館員
     buc:
       - name: 棚卸
         activity:
