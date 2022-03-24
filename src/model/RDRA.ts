@@ -72,7 +72,7 @@ export class RDRA {
     // --------------------------------------
     // 業務
     // BUC -> アクター, UC複合
-    const business = source.business ? Business.resolve(source.business, actor, externalSystem, usecase) : null
+    const business = source.business ? Business.resolve(source.business, system, actor, externalSystem, usecase) : null
 
     return {
       system,

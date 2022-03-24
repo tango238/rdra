@@ -5,6 +5,7 @@ import { ErrorReport } from '../RDRA'
 import { Actor } from '../actor/Actor'
 import { Usecase } from '../usecase/Usecase'
 import { ExternalSystem } from '../actor/ExternalSystem'
+import { System } from '../actor/System'
 
 export class Business {
   private readonly _names: string[] = []
@@ -19,6 +20,7 @@ export class Business {
 
   static resolve(
     source: JsonSchemaBusiness[],
+    system: System,
     actor: Actor,
     externalSystem: ExternalSystem | null,
     usecase: Usecase | null
@@ -31,7 +33,7 @@ export class Business {
             const usedByCounted = a.used_by.countValues()
             usedByCounted.forEach((count: number, usedBy: string) => {
               if (count > 1) errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が重複しています。`)
-              if (!actor.names.includes(usedBy) && !externalSystem?.names.includes(usedBy)) {
+              if (system.name != usedBy && !actor.names.includes(usedBy) && !externalSystem?.names.includes(usedBy)) {
                 errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が未登録です。`)
               }
             })
