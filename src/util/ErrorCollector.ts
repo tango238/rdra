@@ -21,7 +21,8 @@ export class ErrorCollector {
       invariant(model.externalSystem)
       errors.push(...model.externalSystem.errors)
     }
-    if (this.hasError(model.information)) {
+    if (this.notNullAndHasError(model.information)) {
+      invariant(model.information)
       errors.push(...model.information.errors)
     }
     if (this.notNullAndHasError(model.state)) {
@@ -52,12 +53,12 @@ export class ErrorCollector {
     return errors
   }
 
-  private static notNullAndHasError(source: ExternalSystem | Business | Variation | Condition | Usecase | State | StateTransition | null): boolean {
+  private static notNullAndHasError(source: ExternalSystem | Information| Business | Variation | Condition | Usecase | State | StateTransition | null): boolean {
     if (source == null) return false
     return source.errors.length > 0
   }
 
-  private static hasError(source: Actor | Information): boolean {
+  private static hasError(source: Actor): boolean {
     return source.errors.length > 0
   }
 

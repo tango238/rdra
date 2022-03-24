@@ -51,6 +51,11 @@ export const handler: BaseHandler = async (argv) => {
     process.exit(1)
   }
 
+  if (!model.information) {
+    info("情報が未定義です。")
+    process.exit(0)
+  }
+
   // ------------------------------
   // Information
   title("情報")

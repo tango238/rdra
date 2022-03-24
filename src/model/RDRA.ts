@@ -16,7 +16,7 @@ export type RelationalModel = {
   system: System
   actor: Actor
   externalSystem: ExternalSystem | null
-  information: Information
+  information: Information | null
   state: State | null
   transition: StateTransition | null
   variation: Variation | null
@@ -48,7 +48,7 @@ export class RDRA {
 
     // --------------------------------------
     // 情報
-    const information = Information.resolve(source.information, variation)
+    const information = source.information ? Information.resolve(source.information, variation) : null
 
     // --------------------------------------
     // 状態

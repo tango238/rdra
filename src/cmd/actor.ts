@@ -4,6 +4,7 @@ import { Yaml } from '../util/Yaml'
 import { RDRA } from '../model/RDRA'
 import { ErrorCollector } from '../util/ErrorCollector'
 import { outputAllActors } from './output/actor'
+import { error } from './output/console'
 
 export const command = 'actor [value]'
 export const desc = 'Show list of actor/internal/external'
@@ -32,7 +33,9 @@ export const handler: BaseHandler = async (argv) => {
   const input = yaml.load(sourcePath)
   errors = yaml.validate(input)
   if (errors.length > 0) {
-    console.log(errors)
+    errors.forEach(err => {
+      error(err)
+    })
     process.exit(1)
   }
 
@@ -41,7 +44,9 @@ export const handler: BaseHandler = async (argv) => {
   const model = rdra.resolve(input)
   errors = ErrorCollector.collect(model)
   if (errors.length > 0) {
-    console.log(errors)
+    errors.forEach(err => {
+      error(err)
+    })
     process.exit(1)
   }
 

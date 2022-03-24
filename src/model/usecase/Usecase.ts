@@ -18,7 +18,7 @@ export class Usecase {
 
   static resolve(
     source: JsonSchemaUsecase[],
-    information: Information,
+    information: Information | null,
     condition: Condition | null
   ) {
     let errors: ErrorReport = []
@@ -68,14 +68,18 @@ class UsecaseInstance {
     this._condition = condition
   }
 
-  static resolve(source: { name: string, view: string[] | null, information: string[], condition: string[] }, information: Information, condition: Condition | null) {
+  static resolve(source: { name: string, view: string[] | null, information: string[], condition: string[] }, information: Information | null, condition: Condition | null) {
     const instance = new UsecaseInstance(source.name, source.view, source.information, source.condition)
     if (instance._information) {
-      const countedInfo = instance._information.countValues()
-      countedInfo.forEach((count, key) => {
-        if (count > 1) instance._errors.push(`ユースケースに定義されている情報名[${key}]が重複しています。`)
-        if (!information.names.includes(key)) instance._errors.push(`ユースケースに定義されている情報名[${key}]が未登録です。`)
-      })
+      if (!information) {
+        instance._errors.push(`情報[${instance._information}]が未定義です。`)
+      } else {
+        const countedInfo = instance._information.countValues()
+        countedInfo.forEach((count, key) => {
+          if (count > 1) instance._errors.push(`ユースケースに定義されている情報名[${key}]が重複しています。`)
+          if (!information.names.includes(key)) instance._errors.push(`ユースケースに定義されている情報名[${key}]が未登録です。`)
+        })
+      }
     }
     if (instance._condition) {
       const countedCond = instance._condition.countValues()

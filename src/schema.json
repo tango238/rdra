@@ -74,8 +74,7 @@
   },
   "required": [
     "system",
-    "actor",
-    "information"
+    "actor"
   ],
   "$defs": {
     "Actor": {
