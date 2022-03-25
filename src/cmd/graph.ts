@@ -91,8 +91,9 @@ const outputBusinessContext = async (businessName: string, business: Business, a
 digraph G {
   graph [
       charset = "UTF-8";
-      layout = fdp;
-      label = "ビジネスコンテキスト図"
+      layout = dot;
+      label = "ビジネスコンテキスト図";
+      overlap = scale;
   ]
 
   subgraph cluster_0 {
@@ -108,7 +109,7 @@ digraph G {
   ${edges.join('\n')}
 }`
 
-  // console.log(code)
+  console.log(code)
   fs.writeFileSync(`output/business.svg`, vizRenderStringSync(code))
 }
 
