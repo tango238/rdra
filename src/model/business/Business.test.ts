@@ -7,13 +7,14 @@ import { Variation } from '../variation/Variation'
 import { Condition } from '../condition/Condition'
 import { State } from '../state/State'
 import { Actor } from '../actor/Actor'
-import { System } from '../actor/InternalSystem'
-import { ExternalActor } from '../actor/ExternalSystem'
+import { Overview } from '../actor/Overview'
+import { ExternalActor } from '../actor/ExternalActor'
 
 test('resolve', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [{
         name: 'buc 1', activity: [
           {
@@ -25,7 +26,7 @@ test('resolve', () => {
       }]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(0)
 })
 
@@ -33,6 +34,7 @@ test('resolved - ビジネスが重複している', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [{
         name: 'buc 1', activity: [
           {
@@ -45,6 +47,7 @@ test('resolved - ビジネスが重複している', () => {
     },
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [{
         name: 'buc 2', activity: [
           {
@@ -56,7 +59,7 @@ test('resolved - ビジネスが重複している', () => {
       }]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(1)
 })
 
@@ -64,6 +67,7 @@ test('resolve - BUCが重複している', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [
         {
           name: 'buc 1', activity: [
@@ -86,7 +90,7 @@ test('resolve - BUCが重複している', () => {
       ]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(1)
 })
 
@@ -94,6 +98,7 @@ test('resolve - アクティビティが重複している', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [
         {
           name: 'buc 1', activity: [
@@ -112,7 +117,7 @@ test('resolve - アクティビティが重複している', () => {
       ]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(1)
 })
 
@@ -120,6 +125,7 @@ test('resolve - アクターが未登録', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [
         {
           name: 'buc 1', activity: [
@@ -133,7 +139,7 @@ test('resolve - アクターが未登録', () => {
       ]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(1)
 })
 
@@ -141,6 +147,7 @@ test('resolve - 同じアクターが複数回', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [
         {
           name: 'buc 1', activity: [
@@ -154,7 +161,7 @@ test('resolve - 同じアクターが複数回', () => {
       ]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(1)
 })
 
@@ -162,6 +169,7 @@ test('resolve - ユースケースが未登録', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [
         {
           name: 'buc 1', activity: [
@@ -175,7 +183,7 @@ test('resolve - ユースケースが未登録', () => {
       ]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(1)
 })
 
@@ -183,6 +191,7 @@ test('resolve - 同じユースケースが複数回', () => {
   const source: JsonSchemaBusiness[] = [
     {
       name: 'business 1',
+      main_actor: ['actor 1'],
       buc: [
         {
           name: 'buc 1', activity: [
@@ -196,7 +205,7 @@ test('resolve - 同じユースケースが複数回', () => {
       ]
     }
   ]
-  const resolved = Business.resolve(source, actor(), internalSystem(), externalSystem(), usecase())
+  const resolved = Business.resolve(source, overview().system, actor(), externalActor(), usecase())
   expect(resolved.errors.length).toBe(1)
 })
 
@@ -211,11 +220,11 @@ const actor = () => {
   return Actor.resolve([{ name: 'actor 1' }])
 }
 
-const internalSystem = () => {
-  return System.resolve([{ name: 'internal system 1' }])
+const overview = () => {
+  return Overview.resolve({ business: 'overview business', system: 'overview system' })
 }
 
-const externalSystem = () => {
+const externalActor = () => {
   return ExternalActor.resolve([{ name: 'external system 1' }])
 }
 

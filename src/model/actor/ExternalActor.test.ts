@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals'
-import { ExternalActor } from './ExternalSystem'
+import { ExternalActor } from './ExternalActor'
 
 test('resolve', () => {
   const name = 'external system 1'
