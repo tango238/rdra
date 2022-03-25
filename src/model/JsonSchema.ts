@@ -1,7 +1,7 @@
 export type JsonSchema = {
-  system: JsonSchemaSystem | string
+  overview: JsonSchemaOverview
   actor: (JsonSchemaActor | string)[]
-  external_system: (JsonSchemaExternalSystem | string)[] | null
+  external_actor: (JsonSchemaExternalActor | string)[] | null
   information: JsonSchemaInformation[]
   usecase: JsonSchemaUsecase[] | null
   business: JsonSchemaBusiness[] | null
@@ -10,9 +10,9 @@ export type JsonSchema = {
   condition: JsonSchemaCondition[] | null
 }
 
-export type JsonSchemaSystem = {
-  name: string
-  description?: string | null
+export type JsonSchemaOverview = {
+  business: string
+  system: string
 }
 
 export type JsonSchemaActor = {
@@ -20,7 +20,7 @@ export type JsonSchemaActor = {
   description?: string | null
 }
 
-export type JsonSchemaExternalSystem = {
+export type JsonSchemaExternalActor = {
   name: string
   description?: string | null
 }
@@ -42,7 +42,7 @@ export type JsonSchemaUsecase = {
 
 export type JsonSchemaBusiness = {
   name: string
-  main_character: string[]
+  main_actor: string[]
   buc: SourceBucJSON[]
 }
 

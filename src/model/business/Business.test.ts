@@ -8,7 +8,7 @@ import { Condition } from '../condition/Condition'
 import { State } from '../state/State'
 import { Actor } from '../actor/Actor'
 import { System } from '../actor/InternalSystem'
-import { ExternalSystem } from '../actor/ExternalSystem'
+import { ExternalActor } from '../actor/ExternalSystem'
 
 test('resolve', () => {
   const source: JsonSchemaBusiness[] = [
@@ -216,7 +216,7 @@ const internalSystem = () => {
 }
 
 const externalSystem = () => {
-  return ExternalSystem.resolve([{ name: 'external system 1' }])
+  return ExternalActor.resolve([{ name: 'external system 1' }])
 }
 
 const variation = () => {

@@ -1,21 +1,16 @@
 import { RelationalModel } from '../../model/RDRA'
 import { Actor } from '../../model/actor/Actor'
-import { System } from '../../model/actor/System'
-import { ExternalSystem } from '../../model/actor/ExternalSystem'
-import { Activity, Buc, Business, BusinessInstance } from '../../model/business/Business'
-import { br, info, subtitle, title } from './console'
+import { ExternalActor } from '../../model/actor/ExternalActor'
+import { Activity, Business, BusinessInstance } from '../../model/business/Business'
+import { br, info, subtitle } from './console'
 
 export const outputAllActors = (model: RelationalModel) => {
-  title("システム／アクター／外部システム")
-  subtitle("システム")
-  outputSystem(model.system)
-
   subtitle("アクター")
   outputActor(model.actor, model.business)
 
-  if (model.externalSystem) {
-    subtitle("外部システム")
-    outputExternal(model.externalSystem, model.business)
+  if (model.externalActor) {
+    subtitle("外部アクター")
+    outputExternal(model.externalActor, model.business)
   }
 }
 
@@ -36,13 +31,7 @@ const outputActor = (actor: Actor, business: Business | null) => {
   })
 }
 
-const outputSystem = (system: System) => {
-  info(`名前          : ${system.name}`)
-  info(`説明          : ${system.description ?? '-'}`)
-  br()
-}
-
-const outputExternal = (external: ExternalSystem, business: Business | null) => {
+const outputExternal = (external: ExternalActor, business: Business | null) => {
   external.instances.forEach(it => {
     info(`名前          : ${it.name}`)
     info(`説明          : ${it.description ?? '-'}`)

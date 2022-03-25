@@ -4,8 +4,7 @@ import { JsonSchemaBusiness } from '../JsonSchema'
 import { ErrorReport } from '../RDRA'
 import { Actor } from '../actor/Actor'
 import { Usecase } from '../usecase/Usecase'
-import { ExternalSystem } from '../actor/ExternalSystem'
-import { System } from '../actor/System'
+import { ExternalActor } from '../actor/ExternalActor'
 
 export class Business {
   private readonly _names: string[] = []
@@ -20,17 +19,17 @@ export class Business {
 
   static resolve(
     source: JsonSchemaBusiness[],
-    system: System,
+    system: string,
     actor: Actor,
-    externalSystem: ExternalSystem | null,
+    externalActor: ExternalActor | null,
     usecase: Usecase | null
   ) {
     const errors: ErrorReport = []
     const instances = source.map(it => {
-      const mainCounted = it.main_character.countValues()
+      const mainCounted = it.main_actor.countValues()
       mainCounted.forEach((count: number, main: string) => {
         if (count > 1) errors.push(`業務[${it.name}]に指定されている登場人物[${main}]が重複しています。`)
-        if (system.name != main && !actor.names.includes(main) && !externalSystem?.names.includes(main)) {
+        if (system != main && !actor.names.includes(main) && !externalActor?.names.includes(main)) {
           errors.push(`業務[${it.name}]に指定されているアクター[${main}]が未登録です。`)
         }
       })
@@ -40,7 +39,7 @@ export class Business {
             const usedByCounted = a.used_by.countValues()
             usedByCounted.forEach((count: number, usedBy: string) => {
               if (count > 1) errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が重複しています。`)
-              if (system.name != usedBy && !actor.names.includes(usedBy) && !externalSystem?.names.includes(usedBy)) {
+              if (system != usedBy && !actor.names.includes(usedBy) && !externalActor?.names.includes(usedBy)) {
                 errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が未登録です。`)
               }
             })
@@ -67,7 +66,7 @@ export class Business {
         if (count > 1) errors.push(`BUC[${key}]が重複しています`)
       })
 
-      return new BusinessInstance(it.name, it.main_character, buc)
+      return new BusinessInstance(it.name, it.main_actor, buc)
     })
     const business = new Business(instances)
 

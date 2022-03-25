@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { RelationalModel } from '../model/RDRA'
 import { Actor } from '../model/actor/Actor'
-import { ExternalSystem } from '../model/actor/ExternalSystem'
+import { ExternalActor } from '../model/actor/ExternalActor'
 import { State } from '../model/state/State'
 import { Information } from '../model/information/Information'
 import { StateTransition } from '../model/state/StateTransition'
@@ -17,9 +17,9 @@ export class ErrorCollector {
     if (this.hasError(model.actor)) {
       errors.push(...model.actor.errors)
     }
-    if (this.notNullAndHasError(model.externalSystem)) {
-      invariant(model.externalSystem)
-      errors.push(...model.externalSystem.errors)
+    if (this.notNullAndHasError(model.externalActor)) {
+      invariant(model.externalActor)
+      errors.push(...model.externalActor.errors)
     }
     if (this.notNullAndHasError(model.information)) {
       invariant(model.information)
@@ -53,7 +53,7 @@ export class ErrorCollector {
     return errors
   }
 
-  private static notNullAndHasError(source: ExternalSystem | Information| Business | Variation | Condition | Usecase | State | StateTransition | null): boolean {
+  private static notNullAndHasError(source: ExternalActor | Information| Business | Variation | Condition | Usecase | State | StateTransition | null): boolean {
     if (source == null) return false
     return source.errors.length > 0
   }

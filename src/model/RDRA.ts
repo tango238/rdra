@@ -1,6 +1,6 @@
 import { Actor } from './actor/Actor'
-import { System } from './actor/System'
-import { ExternalSystem } from './actor/ExternalSystem'
+import { Overview } from './actor/Overview'
+import { ExternalActor } from './actor/ExternalActor'
 import { Information } from './information/Information'
 import { Usecase } from './usecase/Usecase'
 import { State } from './state/State'
@@ -13,9 +13,9 @@ import { JsonSchema } from './JsonSchema'
 export type ErrorReport = string[]
 
 export type RelationalModel = {
-  system: System
+  overview: Overview
   actor: Actor
-  externalSystem: ExternalSystem | null
+  externalActor: ExternalActor | null
   information: Information | null
   state: State | null
   transition: StateTransition | null
@@ -28,18 +28,18 @@ export type RelationalModel = {
 export class RDRA {
 
   resolve(source: JsonSchema): RelationalModel {
+    const overview = Overview.resolve(source.overview)
+
     // --------------------------------------
     // アクター
-    const srcSystem = typeof source.system == "object" ? source.system : { name: source.system }
-    const system = System.resolve(srcSystem)
 
     const srcActor = source.actor.map(actor => typeof actor == "object" ? actor : { name: actor })
     const actor = Actor.resolve(srcActor)
 
-    let externalSystem = null
-    if (source.external_system) {
-      const srcExternal = source.external_system.map(external => typeof external == "object" ? external : { name: external })
-      externalSystem = ExternalSystem.resolve(srcExternal)
+    let externalActor = null
+    if (source.external_actor) {
+      const srcExternal = source.external_actor.map(external => typeof external == "object" ? external : { name: external })
+      externalActor = ExternalActor.resolve(srcExternal)
     }
 
     // --------------------------------------
@@ -72,12 +72,12 @@ export class RDRA {
     // --------------------------------------
     // 業務
     // BUC -> アクター, UC複合
-    const business = source.business ? Business.resolve(source.business, system, actor, externalSystem, usecase) : null
+    const business = source.business ? Business.resolve(source.business, overview.system, actor, externalActor, usecase) : null
 
     return {
-      system,
+      overview,
       actor,
-      externalSystem,
+      externalActor,
       information,
       state,
       transition,

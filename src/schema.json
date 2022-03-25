@@ -5,34 +5,19 @@
   "description": "Relationship Driven Requirement Analysis",
   "type": "object",
   "properties": {
-    "system": {
-      "type": [
-        "object",
-        "string"
-      ],
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "name"
-      ]
+    "overview": {
+      "$ref": "#/$defs/Overview"
     },
     "actor": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/Actor"
       }
-      },
-    "external_system": {
+    },
+    "external_actor": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/ExternalSystem"
+        "$ref": "#/$defs/ExternalActor"
       }
     },
     "information": {
@@ -72,11 +57,28 @@
       }
     }
   },
+  "additionalProperties": false,
   "required": [
-    "system",
+    "overview",
     "actor"
   ],
   "$defs": {
+    "Overview": {
+      "type": "object",
+      "properties": {
+        "business": {
+          "type": "string"
+        },
+        "system": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "business",
+        "system"
+      ]
+    },
     "Actor": {
       "type": [
         "object",
@@ -95,7 +97,7 @@
         "name"
       ]
     },
-    "ExternalSystem": {
+    "ExternalActor": {
       "type": [
         "object",
         "string"
@@ -268,7 +270,7 @@
         "name": {
           "type": "string"
         },
-        "main_character": {
+        "main_actor": {
           "type": "array",
           "items": {
             "type": "string"
@@ -283,7 +285,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "main_character",
+        "main_actor",
         "buc"
       ]
     },

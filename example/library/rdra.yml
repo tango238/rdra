@@ -1,10 +1,12 @@
-system: 書籍管理システム
+overview:
+  business: 図書館
+  system: 書籍管理システム
 
 actor:
-  - 会員
   - 図書館員
 
-external_system:
+external_actor:
+  - 会員
   - 書籍通販会社
 
 information:
@@ -82,7 +84,7 @@ state:
 
 business:
   - name: 貸出・返却
-    main_character:
+    main_actor:
       - 会員
       - 図書館員
     buc:
@@ -126,7 +128,7 @@ business:
               - 貸出図書の返却を登録する
 
   - name: 会員管理
-    main_character:
+    main_actor:
       - 会員
       - 図書館員
     buc:
@@ -161,8 +163,9 @@ business:
               - 取置を解消する
 
   - name: 蔵書管理
-    main_character:
+    main_actor:
       - 図書館員
+      - 書籍通販会社
     buc:
       - name: 棚卸
         activity:
