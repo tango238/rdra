@@ -1,0 +1,99 @@
+overview:
+  business: 宿泊施設の運営
+  system: 宿泊予約管理システム
+
+actor:
+  - name: 受付担当者
+    description: 主にチェックインなど宿泊客に対する接客業務を行う
+  - name: 運営管理者
+    description: 主に宿泊施設の収益を管理する
+
+external_actor:
+  - 宿泊客
+  - name: Airbnb
+    description: |-
+      インターネット上だけで旅行商品の取引が完結する旅行会社（OTAと呼ばれる）
+      宿泊予約はこのOTA経由で作成されることがある。
+      予約が成立した場合は、このOTAに対して手数料を支払う必要がある。
+
+business:
+  - name: 予約管理
+    main_actor:
+      - 受付担当者
+      - 宿泊客
+      - Airbnb
+    buc:
+      - name: 電話予約
+        activity:
+          - name: 電話予約を受け付ける
+            used_by:
+              - 受付担当者
+          - name: 予約を登録する
+            used_by:
+              - 受付担当者
+
+  - name: 受付
+    main_actor:
+      - 受付担当者
+      - 宿泊客
+    buc:
+      - name: チェックイン
+        activity:
+          - name: 宿泊者氏名の確認
+            used_by:
+              - 受付担当者
+          - name: 宿泊者名簿の記入
+            used_by:
+              - 宿泊客
+          - name: 売上登録
+            used_by:
+              - 受付担当者
+          - name: 領収書発行
+            used_by:
+              - 受付担当者
+
+  - name: 日次締め
+    main_actor:
+      - 受付担当者
+      - 運営管理者
+    buc:
+      - name: 入金の登録
+        activity:
+          - name: 入金の確認
+            used_by:
+              - 受付担当者
+              - 運営管理者
+          - name: 入金の登録
+            used_by:
+              - 運営管理者
+      - name: 出金の登録
+        activity:
+          - name: 出金の確認
+            used_by:
+              - 受付担当者
+              - 運営管理者
+          - name: 出金の登録
+            used_by:
+              - 運営管理者
+      - name: 現金過不足の確認
+        activity:
+          - name: 現金の確認
+            used_by:
+              - 受付担当者
+              - 運営管理者
+      - name: 銀行預入金の登録
+        activity:
+          - name: 銀行預入金分を持ち出す
+            used_by:
+              - 運営管理者
+          - name: 銀行預入金を登録
+            used_by:
+              - 運営管理者
+      - name: 繰越準備金の登録
+        activity:
+          - name: 繰越準備金を数える
+            used_by:
+              - 運営管理者
+          - name: 繰越準備金を登録
+            used_by:
+              - 運営管理者
