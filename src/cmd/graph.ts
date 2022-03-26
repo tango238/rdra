@@ -7,10 +7,11 @@ import { RDRA } from '../model/RDRA'
 import { ErrorCollector } from '../util/ErrorCollector'
 import { StateGroup } from '../model/state/StateTransition'
 import { heredoc } from '../util/heredoc'
-import { Business } from '../model/business/Business'
+import { Buc, Business } from '../model/business/Business'
 import vizRenderStringSync from '@aduh95/viz.js/sync'
 import { Actor } from '../model/actor/Actor'
 import { ExternalActor } from '../model/actor/ExternalActor'
+import { Usecase } from '../model/usecase/Usecase'
 
 export const command = 'graph [value]'
 export const desc = 'Generate relational graphs'
@@ -69,6 +70,16 @@ export const handler: BaseHandler = async (argv) => {
   }
 
   // ------------------------------
+  // Workflow
+  if (model.business) {
+    model.business.instances.forEach(b => {
+      b.buc.forEach(buc => {
+        outputWorkflow(buc, model.usecase)
+      })
+    })
+  }
+
+  // ------------------------------
   // State Transition
   if (model.transition) {
     model.transition.instances.forEach(group => {
@@ -77,10 +88,10 @@ export const handler: BaseHandler = async (argv) => {
   }
 }
 
-const outputBusinessContext = async (businessName: string, business: Business, actor: Actor, externalActor: ExternalActor | null) => {
+const outputBusinessContext = (businessName: string, business: Business, actor: Actor, externalActor: ExternalActor | null) => {
   const names = business.names.map(n => `${n} [shape = box3d, fontsize = "11pt"];`)
   const actors = actor.names.map(a => `${a} [fontsize = "9pt"];`)
-  const externalActors = externalActor ? externalActor.names.map(a => `${a} [fontsize = "9pt"];`) : [];
+  const externalActors = externalActor ? externalActor.names.map(a => `${a} [fontsize = "9pt"];`) : []
   const edges = business.instances.flatMap(b =>
     b.main.map(actor =>
       `${actor} -> ${b.name} [arrowhead = none];`
@@ -112,7 +123,90 @@ digraph G {
   fs.writeFileSync(`output/BusinessContext.svg`, vizRenderStringSync(code))
 }
 
-const outputStateTransition = async (group: StateGroup) => {
+const outputWorkflow = (buc: Buc, usecase: Usecase | null) => {
+  if (buc.activity.length == 0) {
+    console.log(`[${buc.name}]アクティビティが登録されていません。`)
+    return
+  }
+
+  const start = buc.activity[0]?.name ?? 'start'
+  const activities = buc.activity.map(act => `"${act.name}"`)
+
+  const activityUsedBy = buc.activity.flatMap(act =>
+    act.used_by.map(usedBy => {
+        return {
+          actor: usedBy,
+          activity_actor:`${act.name}_${usedBy}`,
+          activity: act.name,
+          usecase: act.usecase
+        }
+      }
+    ))
+
+  // make edges to be unique
+  const edges = [... new Set(activityUsedBy.flatMap(a => a.usecase?.map(uc => `"${a.activity}" -> "${uc}"  [dir = none];`)))]
+  const ucNames = (buc.activity.filter(act => act.usecase).flatMap(act => act.usecase)) as string[]
+  const ucCode = usecase ? outputUsecase(usecase, ucNames) : ""
+
+  const code = heredoc`
+digraph {
+  layout = dot;
+  rankdir = LR;
+  label = "${buc.name}";
+    
+  start [shape = point];
+  start -> ${start} [dir = none];
+
+  // node actor
+  ${activityUsedBy.map(a => `"${a.activity_actor}" [label = "${a.actor}"];`).join('\n')}
+  
+  // node activity
+  ${activities.map(activity => `${activity} [shape = box];`).join('\n')}
+  
+  // node usecase
+  ${ucNames.map(uc => `"${uc}" [shape = none];`).join('\n')}
+  
+  // edge [activity]
+  ${activities.join(' -> ')};
+
+  // edge actor -> activity
+  ${activityUsedBy.map(a => `"${a.activity_actor}" -> "${a.activity}"  [dir = none, style = dashed];`).join('\n')}
+
+  // edge activity -> usecase
+  ${edges.join('\n')}
+  
+  // usecase -> view, information, condition
+  ${ucCode}
+  
+  {rank = same; start; ${activities.join(';')};}
+  {rank = same; ${ucNames.join(';')}}
+  {rank = same; ${activityUsedBy.map(a => `"${a.activity_actor}"`).join(';')}}
+}`
+
+  // console.log(code)
+  fs.writeFileSync(`output/wf_${buc.name}.svg`, vizRenderStringSync(code))
+}
+
+
+const outputUsecase = (usecase: Usecase, names: string[]) => {
+
+  const ucs = usecase.instances.filter(uc => names.includes(uc.name))
+
+  // uc -> view
+  const ucView = [... new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"${uc.name}" -> "画面\n${view}" [dir = none];`)))]
+  // uc -> information
+  const ucInfo = [... new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"${uc.name}" -> "情報\n${info}" [dir = none];`)))]
+  // uc -> condition
+  const ucCond = [... new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"${uc.name}" -> "条件\n${cond}" [dir = none];`)))]
+
+  return heredoc`
+    ${ucView.join('\n')}
+    ${ucInfo.join('\n')}
+    ${ucCond.join('\n')}
+  `
+}
+
+const outputStateTransition = (group: StateGroup) => {
   const vizRenderStringSync = require("@aduh95/viz.js/sync")
 
   let stateDiagram: string[] = []
@@ -139,5 +233,5 @@ digraph {
 ${edges}
 }`
 
-  fs.writeFileSync(`output/${group.name}.svg`, vizRenderStringSync(code))
+  fs.writeFileSync(`output/st_${group.name}.svg`, vizRenderStringSync(code))
 }
