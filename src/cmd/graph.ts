@@ -78,7 +78,7 @@ export const handler: BaseHandler = async (argv) => {
 }
 
 const outputBusinessContext = async (businessName: string, business: Business, actor: Actor, externalActor: ExternalActor | null) => {
-  const names = business.names.map(n => `${n} [shape = box3d];`)
+  const names = business.names.map(n => `${n} [shape = box3d, fontsize = "11pt"];`)
   const actors = actor.names.map(a => `${a} [fontsize = "9pt"];`)
   const externalActors = externalActor ? externalActor.names.map(a => `${a} [fontsize = "9pt"];`) : [];
   const edges = business.instances.flatMap(b =>
@@ -109,8 +109,7 @@ digraph G {
   ${edges.join('\n')}
 }`
 
-  console.log(code)
-  fs.writeFileSync(`output/business.svg`, vizRenderStringSync(code))
+  fs.writeFileSync(`output/BusinessContext.svg`, vizRenderStringSync(code))
 }
 
 const outputStateTransition = async (group: StateGroup) => {
