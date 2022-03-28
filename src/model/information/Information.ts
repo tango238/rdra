@@ -1,7 +1,7 @@
 import '../array.extensions'
 import invariant from 'tiny-invariant'
 import { ErrorReport } from '../RDRA'
-import { JsonSchemaInformation } from '../JsonSchema'
+import { JsonSchemaInformation, JsonSchemaInformationValue } from '../JsonSchema'
 import { Variation } from '../variation/Variation'
 
 export class Information {
@@ -16,7 +16,9 @@ export class Information {
   }
 
   static resolve(source: JsonSchemaInformation[], variation: Variation | null): Information {
-    const instances = source.map(it => new InformationInstance(it.name, it.description ?? null, it.related, it.variation))
+    const instances = source
+      .flatMap(it => it.value
+        .map(v => new InformationInstance(it.context, v.name, v.description ?? null, v.related, v.variation)))
     const information = new Information(instances)
     const counted = information._names.countValues()
     counted.forEach((value, key) => {
@@ -60,16 +62,22 @@ export class Information {
 }
 
 export class InformationInstance {
+  private readonly _context: string
   private readonly _name: string
   private readonly _description: string | null
   private readonly _related: string[]
   private readonly _variation: string
 
-  constructor(name: string, description: string | null, related: string[] = [], variation: string = '') {
+  constructor(context: string, name: string, description: string | null, related: string[] = [], variation: string = '') {
+    this._context = context
     this._name = name
     this._description = description
     this._related = related
     this._variation = variation
+  }
+
+  get context(): string {
+    return this._context
   }
 
   get name(): string {

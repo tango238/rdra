@@ -6,8 +6,10 @@ actor:
   - 社員
 
 information:
-  - name: 社員
-  - name: 出退勤記録
+  - context: 社員情報
+    value:
+      - name: 社員
+      - name: 出退勤記録
 
 state:
   - group: 出退勤

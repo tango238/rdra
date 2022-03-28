@@ -52,12 +52,12 @@ business:
             used_by:
               - 受付担当者
 
-  - name: 日次締め
+  - name: 締め処理
     main_actor:
       - 受付担当者
       - 運営管理者
     buc:
-      - name: 入金の登録
+      - name: 日次締め
         activity:
           - name: 入金の確認
             used_by:
@@ -66,8 +66,6 @@ business:
           - name: 入金の登録
             used_by:
               - 運営管理者
-      - name: 出金の登録
-        activity:
           - name: 出金の確認
             used_by:
               - 受付担当者
@@ -75,22 +73,16 @@ business:
           - name: 出金の登録
             used_by:
               - 運営管理者
-      - name: 現金過不足の確認
-        activity:
-          - name: 現金の確認
+          - name: 現金過不足の確認
             used_by:
               - 受付担当者
               - 運営管理者
-      - name: 銀行預入金の登録
-        activity:
-          - name: 銀行預入金分を持ち出す
+          - name: 銀行預入金の登録
             used_by:
               - 運営管理者
           - name: 銀行預入金を登録
             used_by:
               - 運営管理者
-      - name: 繰越準備金の登録
-        activity:
           - name: 繰越準備金を数える
             used_by:
               - 運営管理者

@@ -211,8 +211,12 @@ test('resolve - 同じユースケースが複数回', () => {
 
 const information = () => {
   return Information.resolve([
-    { name: 'info 1', related: ['info 2'] },
-    { name: 'info 2', related: ['info 1'] }
+    {
+      context: 'context 1', value: [
+        { name: 'info 1', related: ['info 2'] },
+        { name: 'info 2', related: ['info 1'] }
+      ]
+    }
   ], null)
 }
 

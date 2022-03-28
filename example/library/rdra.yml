@@ -10,40 +10,42 @@ external_actor:
   - 書籍通販会社
 
 information:
-  - name: 会員
-    related:
-    - 貸出予約
-  - name: 貸出予約
-    related:
-      - 本
-      - 貸出図書
-  - name: 貸出図書
-    related:
-      - 会員
-      - 蔵書
-  - name: 本
-    related:
-      - 書籍発注
-    variation: 本種別
-  - name: 蔵書
-    related:
-      - 書架
-      - 本
-  - name: 書架
-  - name: 書籍発注
-  - name: 取置期限切れ
-    related:
-      - 貸出予約
+  - context: 図書館情報
+    value:
+      - name: 会員
+        related:
+          - 貸出予約
+      - name: 貸出予約
+        related:
+          - 本
+          - 貸出図書
+      - name: 貸出図書
+        related:
+          - 会員
+          - 蔵書
+      - name: 本
+        related:
+          - 書籍発注
+        variation: 本種別
+      - name: 蔵書
+        related:
+          - 書架
+          - 本
+      - name: 書架
+      - name: 書籍発注
+      - name: 取置期限切れ
+        related:
+          - 貸出予約
 
 state:
   - group: 蔵書の状態
     value:
       - name: 貸出中_期限内
         usecase:
-        - name: 貸出図書の返却を登録する
-          next_state: 在庫中
-        - name: 貸出期限を確認する
-          next_state: 貸出中_期限切れ
+          - name: 貸出図書の返却を登録する
+            next_state: 在庫中
+          - name: 貸出期限を確認する
+            next_state: 貸出中_期限切れ
       - name: 貸出中_期限切れ
         usecase:
           - name: 貸出図書の返却を登録する

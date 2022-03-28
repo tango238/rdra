@@ -118,6 +118,24 @@
     "Information": {
       "type": "object",
       "properties": {
+        "context": {
+          "type": "string"
+        },
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InformationValue"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "context", "value"
+      ]
+    },
+    "InformationValue": {
+      "type": "object",
+      "properties": {
         "name": {
           "type": "string"
         },

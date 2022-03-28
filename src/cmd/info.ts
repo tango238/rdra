@@ -7,7 +7,7 @@ import { checkFileExists, getSourcePath } from './util/options'
 import { table } from 'table-b'
 import chalk from 'chalk'
 
-export const command = 'information [value]'
+export const command = 'info [value]'
 export const desc = 'Show a list of information'
 
 

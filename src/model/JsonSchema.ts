@@ -26,11 +26,17 @@ export type JsonSchemaExternalActor = {
 }
 
 export type JsonSchemaInformation = {
+  context: string
+  value: JsonSchemaInformationValue[]
+}
+
+export type JsonSchemaInformationValue = {
   name: string
   description?: string
   related?: string[]
   variation?: string
 }
+
 
 export type JsonSchemaUsecase = {
   name: string
