@@ -12,10 +12,10 @@ import vizRenderStringSync from '@aduh95/viz.js/sync'
 import { Actor } from '../model/actor/Actor'
 import { ExternalActor } from '../model/actor/ExternalActor'
 import { Usecase } from '../model/usecase/Usecase'
+import { Information } from '../model/information/Information'
 
 export const command = 'graph [value]'
 export const desc = 'Generate relational graphs'
-
 
 export const builder: BaseBuilder = (yargs) =>
   yargs
@@ -77,6 +77,12 @@ export const handler: BaseHandler = async (argv) => {
         outputWorkflow(buc, model.usecase)
       })
     })
+  }
+
+  // ------------------------------
+  // Information
+  if (model.information) {
+    outputInformation(model.information)
   }
 
   // ------------------------------
@@ -206,9 +212,32 @@ const outputUsecase = (usecase: Usecase, names: string[]) => {
   `
 }
 
-const outputStateTransition = (group: StateGroup) => {
-  const vizRenderStringSync = require("@aduh95/viz.js/sync")
+const outputInformation = (information: Information) => {
+  const graph = information.contexts().map((ctx,idx) => {
+    const edges = ctx[1].map(edge => edge.related.length > 0 ? `${edge.name} -> ${edge.related} [dir = none]` : `${edge.name};`)
+    return heredoc`
+      subgraph cluster_${idx+''} {
+        label = "${ctx[0]}";
+        
+        ${edges.join('\n')}
+      }
+    `
+  })
 
+  const code = heredoc`
+digraph {
+  layout = fdp;
+  rankdir = LR;
+  label = "情報";
+
+  ${graph.join('\n')}
+}
+  `
+
+  fs.writeFileSync(`output/information.svg`, vizRenderStringSync(code))
+}
+
+const outputStateTransition = (group: StateGroup) => {
   let stateDiagram: string[] = []
   group.values.forEach(value => {
     value.usecase?.forEach(uc => {

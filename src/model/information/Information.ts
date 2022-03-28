@@ -56,8 +56,30 @@ export class Information {
     return this._names
   }
 
+  contexts(): [string, InformationInstance[]][] {
+    return this.instances.groupBy(item => item.context)
+  }
+
   get errors(): ErrorReport {
     return this._errors
+  }
+}
+
+export class InformationWithContext {
+  private readonly _context: string
+  private readonly _value: InformationInstance[]
+
+  constructor(context: string, instances: InformationInstance[]) {
+    this._context = context
+    this._value = instances
+  }
+
+  get context(): string {
+    return this._context
+  }
+
+  get value(): InformationInstance[] {
+    return this._value
   }
 }
 
