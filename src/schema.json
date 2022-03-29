@@ -303,8 +303,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "main_actor",
-        "buc"
+        "main_actor"
       ]
     },
     "BusinessUseCase": {

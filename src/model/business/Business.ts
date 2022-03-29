@@ -1,6 +1,6 @@
 import '../array.extensions'
 import invariant from 'tiny-invariant'
-import { JsonSchemaBusiness } from '../JsonSchema'
+import { JsonSchemaBusiness, SourceBucJSON } from '../JsonSchema'
 import { ErrorReport } from '../RDRA'
 import { Actor } from '../actor/Actor'
 import { Usecase } from '../usecase/Usecase'
@@ -33,39 +33,41 @@ export class Business {
           errors.push(`業務[${it.name}]に指定されているアクター[${main}]が未登録です。`)
         }
       })
-      const buc = it.buc.map(b => {
-        const activity = b.activity.map(a => {
-          if (a.used_by) {
-            const usedByCounted = a.used_by.countValues()
-            usedByCounted.forEach((count: number, usedBy: string) => {
-              if (count > 1) errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が重複しています。`)
-              if (system != usedBy && !actor.names.includes(usedBy) && !externalActor?.names.includes(usedBy)) {
-                errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が未登録です。`)
-              }
-            })
-          }
-          if (a.usecase) {
-            const usecaseCounted = a.usecase.countValues()
-            usecaseCounted.forEach((count, uc) => {
-              if (count > 1) errors.push(`アクティビティ[${a.name}]に指定されているユースケース[${uc}]が重複しています。`)
-              if (usecase && !usecase.names.includes(uc)) errors.push(`アクティビティ[${a.name}]に指定されているユースケース[${uc}]が未登録です。`)
-            })
-          }
-          return new Activity(a.name, a.used_by, a.usecase)
+      let buc:Buc[] = []
+      if (it.buc && it.buc.length >  0) {
+        buc = it.buc.map(b => {
+          const activity = b.activity.map(a => {
+            if (a.used_by) {
+              const usedByCounted = a.used_by.countValues()
+              usedByCounted.forEach((count: number, usedBy: string) => {
+                if (count > 1) errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が重複しています。`)
+                if (system != usedBy && !actor.names.includes(usedBy) && !externalActor?.names.includes(usedBy)) {
+                  errors.push(`アクティビティ[${a.name}]に指定されているアクター[${usedBy}]が未登録です。`)
+                }
+              })
+            }
+            if (a.usecase) {
+              const usecaseCounted = a.usecase.countValues()
+              usecaseCounted.forEach((count, uc) => {
+                if (count > 1) errors.push(`アクティビティ[${a.name}]に指定されているユースケース[${uc}]が重複しています。`)
+                if (usecase && !usecase.names.includes(uc)) errors.push(`アクティビティ[${a.name}]に指定されているユースケース[${uc}]が未登録です。`)
+              })
+            }
+            return new Activity(a.name, a.used_by, a.usecase)
+          })
+          const activityNames = activity.map(a => a.name)
+          const counted = activityNames.countValues()
+          counted.forEach((count, key) => {
+            if (count > 1) errors.push(`アクティビティ[${key}]が重複しています。`)
+          })
+          return new Buc(b.name, activity)
         })
-        const activityNames = activity.map(a => a.name)
-        const counted = activityNames.countValues()
+        const bucNames = buc.map(b => b.name)
+        const counted = bucNames.countValues()
         counted.forEach((count, key) => {
-          if (count > 1) errors.push(`アクティビティ[${key}]が重複しています。`)
+          if (count > 1) errors.push(`BUC[${key}]が重複しています`)
         })
-        return new Buc(b.name, activity)
-      })
-      const bucNames = buc.map(b => b.name)
-      const counted = bucNames.countValues()
-      counted.forEach((count, key) => {
-        if (count > 1) errors.push(`BUC[${key}]が重複しています`)
-      })
-
+      }
       return new BusinessInstance(it.name, it.main_actor, buc)
     })
     const business = new Business(instances)
