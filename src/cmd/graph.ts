@@ -108,9 +108,9 @@ const outputBusinessContext = (businessName: string, business: Business, actor: 
     heredoc`
     subgraph cluster_b${index + ''} {
       label = "";
-      ${biz.name};
+      "${biz.name}";
       
-      ${biz.buc.map(buc => `${buc.name} [fontsize = "9pt", shape = oval, style="filled", fillcolor = "#ff99cc"]`).join('\n;')};
+      ${biz.buc.map(buc => `"${buc.name}" [fontsize = "9pt", shape = oval, style="filled", fillcolor = "#ff99cc"]`).join('\n;')}
     }
   `
   )
@@ -135,7 +135,7 @@ digraph G {
   ${externalActors.join('\n')}
   ${edges.join('\n')}
 }`
-  // console.log(code)
+  console.log(code)
 
   fs.writeFileSync(`output/BusinessContext.svg`, vizRenderStringSync(code))
 }
