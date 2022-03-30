@@ -135,7 +135,7 @@ digraph G {
   ${externalActors.join('\n')}
   ${edges.join('\n')}
 }`
-  console.log(code)
+  // console.log(code)
 
   fs.writeFileSync(`output/BusinessContext.svg`, vizRenderStringSync(code))
 }
