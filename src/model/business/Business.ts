@@ -63,7 +63,7 @@ export class Business {
             })
             return new Buc(b.name, activity)
           }
-          return null;
+          return new Buc(b, [])
         })
         const buc = bucOrNull.filter(b => b != null).map(b => b) as Buc[]
         const bucNames = buc.filter(b => b != null).map(b => {

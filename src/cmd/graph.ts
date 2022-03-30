@@ -95,12 +95,12 @@ export const handler: BaseHandler = async (argv) => {
 }
 
 const outputBusinessContext = (businessName: string, business: Business, actor: Actor, externalActor: ExternalActor | null) => {
-  const names = business.names.map(n => `${n} [shape = box3d, fontsize = "11pt", color = "#0000ff"];`)
-  const actors = actor.names.map(a => `${a} [shape = plaintext, fontsize = "9pt"];`)
-  const externalActors = externalActor ? externalActor.names.map(a => `${a} [shape = plaintext, fontsize = "9pt"];`) : []
+  const names = business.names.map(n => `"${n}" [shape = box3d, fontsize = "11pt", color = "#0000ff"];`)
+  const actors = actor.names.map(a => `"${a}" [shape = plaintext, fontsize = "9pt"];`)
+  const externalActors = externalActor ? externalActor.names.map(a => `"${a}" [shape = plaintext, fontsize = "9pt"];`) : []
   const edges = business.instances.flatMap(b =>
     b.main.map(actor =>
-      `${actor} -> ${b.name} [arrowhead = none];`
+      `"${actor}" -> "${b.name}" [arrowhead = none];`
     )
   )
 
