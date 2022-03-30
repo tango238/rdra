@@ -95,28 +95,38 @@ export const handler: BaseHandler = async (argv) => {
 }
 
 const outputBusinessContext = (businessName: string, business: Business, actor: Actor, externalActor: ExternalActor | null) => {
-  const names = business.names.map(n => `${n} [shape = box3d, fontsize = "11pt"];`)
-  const actors = actor.names.map(a => `${a} [fontsize = "9pt"];`)
-  const externalActors = externalActor ? externalActor.names.map(a => `${a} [fontsize = "9pt"];`) : []
+  const names = business.names.map(n => `${n} [shape = box3d, fontsize = "11pt", color = "#0000ff"];`)
+  const actors = actor.names.map(a => `${a} [shape = plaintext, fontsize = "9pt"];`)
+  const externalActors = externalActor ? externalActor.names.map(a => `${a} [shape = plaintext, fontsize = "9pt"];`) : []
   const edges = business.instances.flatMap(b =>
     b.main.map(actor =>
       `${actor} -> ${b.name} [arrowhead = none];`
     )
   )
 
+  const biz = business.instances.map((biz, index) =>
+    heredoc`
+    subgraph cluster_b${index + ''} {
+      label = "";
+      ${biz.name};
+      
+      ${biz.buc.map(buc => `${buc.name} [fontsize = "9pt", shape = oval, style="filled", fillcolor = "#ff99cc"]`).join('\n;')};
+    }
+  `
+  )
+
   const code = heredoc`
 digraph G {
-  graph [
-      charset = "UTF-8";
-      layout = dot;
-      label = "ビジネスコンテキスト図";
-      overlap = scale;
-  ]
+  layout = fdp;
+  charset = "UTF-8";
+  label = "ビジネスコンテキスト図";
+  rankdir = TB;
 
   subgraph cluster_0 {
       label = "${businessName}";
       style=solid;
-      ${business.names.join(';\n')};
+
+      ${biz.join('\n')};
       ${actor.names.join(';\n')};
   }
 
@@ -125,6 +135,7 @@ digraph G {
   ${externalActors.join('\n')}
   ${edges.join('\n')}
 }`
+  // console.log(code)
 
   fs.writeFileSync(`output/BusinessContext.svg`, vizRenderStringSync(code))
 }
@@ -142,7 +153,7 @@ const outputWorkflow = (buc: Buc, usecase: Usecase | null) => {
     act.used_by.map(usedBy => {
         return {
           actor: usedBy,
-          activity_actor:`${act.name}_${usedBy}`,
+          activity_actor: `${act.name}_${usedBy}`,
           activity: act.name,
           usecase: act.usecase
         }
@@ -150,7 +161,7 @@ const outputWorkflow = (buc: Buc, usecase: Usecase | null) => {
     ))
 
   // make edges to be unique
-  const edges = [... new Set(activityUsedBy.flatMap(a => a.usecase?.map(uc => `"${a.activity}" -> "${uc}"  [dir = none];`)))]
+  const edges = [...new Set(activityUsedBy.flatMap(a => a.usecase?.map(uc => `"${a.activity}" -> "${uc}"  [dir = none];`)))]
   const ucNames = (buc.activity.filter(act => act.usecase).flatMap(act => act.usecase)) as string[]
   const ucCode = usecase ? outputUsecase(usecase, ucNames) : ""
 
@@ -199,11 +210,11 @@ const outputUsecase = (usecase: Usecase, names: string[]) => {
   const ucs = usecase.instances.filter(uc => names.includes(uc.name))
 
   // uc -> view
-  const ucView = [... new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"${uc.name}" -> "画面\n${view}" [dir = none];`)))]
+  const ucView = [...new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"${uc.name}" -> "画面\n${view}" [dir = none];`)))]
   // uc -> information
-  const ucInfo = [... new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"${uc.name}" -> "情報\n${info}" [dir = none];`)))]
+  const ucInfo = [...new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"${uc.name}" -> "情報\n${info}" [dir = none];`)))]
   // uc -> condition
-  const ucCond = [... new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"${uc.name}" -> "条件\n${cond}" [dir = none];`)))]
+  const ucCond = [...new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"${uc.name}" -> "条件\n${cond}" [dir = none];`)))]
 
   return heredoc`
     ${ucView.join('\n')}
@@ -213,10 +224,10 @@ const outputUsecase = (usecase: Usecase, names: string[]) => {
 }
 
 const outputInformation = (information: Information) => {
-  const graph = information.contexts().map((ctx,idx) => {
+  const graph = information.contexts().map((ctx, idx) => {
     const edges = ctx[1].map(edge => edge.related.length > 0 ? `${edge.name} -> ${edge.related} [dir = none]` : `${edge.name};`)
     return heredoc`
-      subgraph cluster_${idx+''} {
+      subgraph cluster_${idx + ''} {
         label = "${ctx[0]}";
         
         ${edges.join('\n')}
