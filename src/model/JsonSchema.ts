@@ -49,7 +49,7 @@ export type JsonSchemaUsecase = {
 export type JsonSchemaBusiness = {
   name: string
   main_actor: string[]
-  buc: SourceBucJSON[] | null
+  buc: SourceBucJSON[] | string[] | null
 }
 
 export type SourceBucJSON = {
