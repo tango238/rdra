@@ -169,25 +169,26 @@ const outputWorkflow = (buc: Buc, usecase: Usecase | null) => {
 digraph {
   layout = dot;
   rankdir = LR;
+  // splines = ortho;
   label = "${buc.name}";
     
   start [shape = point];
   start -> ${start} [dir = none];
 
   // node actor
-  ${activityUsedBy.map(a => `"${a.activity_actor}" [label = "${a.actor}"];`).join('\n')}
+  ${activityUsedBy.map(a => `"${a.activity_actor}" [label = "${a.actor}", shape = none];`).join('\n')}
   
   // node activity
   ${activities.map(activity => `${activity} [shape = box];`).join('\n')}
   
   // node usecase
-  ${ucNames.map(uc => `"${uc}" [shape = none];`).join('\n')}
+  ${ucNames.map(uc => `"${uc}" [shape = none, style="filled", fillcolor = "#ffff99"];`).join('\n')}
   
   // edge [activity]
   ${activities.join(' -> ')};
 
   // edge actor -> activity
-  ${activityUsedBy.map(a => `"${a.activity_actor}" -> "${a.activity}"  [dir = none, style = dashed];`).join('\n')}
+  ${activityUsedBy.map(a => `"${a.activity_actor}" -> "${a.activity}"  [dir = none];`).join('\n')}
 
   // edge activity -> usecase
   ${edges.join('\n')}
@@ -200,7 +201,7 @@ digraph {
   {rank = same; ${activityUsedBy.map(a => `"${a.activity_actor}"`).join(';')}}
 }`
 
-  // console.log(code)
+  console.log(code)
   fs.writeFileSync(`output/wf_${buc.name}.svg`, vizRenderStringSync(code))
 }
 
@@ -210,13 +211,20 @@ const outputUsecase = (usecase: Usecase, names: string[]) => {
   const ucs = usecase.instances.filter(uc => names.includes(uc.name))
 
   // uc -> view
-  const ucView = [...new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"${uc.name}" -> "画面\n${view}" [dir = none];`)))]
+  const view = [...new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"view_${view}" [label = "${view}", shape = tab, style="filled", fillcolor = "#90ee90"];`)))]
+  const ucView = [...new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"${uc.name}" -> "view_${view}" [dir = none];`)))]
   // uc -> information
-  const ucInfo = [...new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"${uc.name}" -> "情報\n${info}" [dir = none];`)))]
+  const info = [...new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"info_${info}" [label = "${info}", shape = note, style="filled", fillcolor = "#f5f5f5"];`)))]
+  const ucInfo = [...new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"${uc.name}" -> "info_${info}" [dir = none];`)))]
   // uc -> condition
-  const ucCond = [...new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"${uc.name}" -> "条件\n${cond}" [dir = none];`)))]
+  const cond = [...new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"cond_${cond}" [label = "${cond}", shape = underline, style="filled", fillcolor = "#87cefa"];`)))]
+  const ucCond = [...new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"${uc.name}" -> "cond_${cond}" [dir = none];`)))]
 
   return heredoc`
+    ${view.join('\n')}
+    ${info.join('\n')}
+    ${cond.join('\n')}
+    
     ${ucView.join('\n')}
     ${ucInfo.join('\n')}
     ${ucCond.join('\n')}
