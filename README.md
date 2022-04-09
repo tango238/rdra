@@ -15,6 +15,10 @@ $ cat rdra.yml
 $ rdra -f rdra.yml list
 ```
 
+And see the link below.
+
+https://github.com/tango238/rdra/wiki
+
 ### JSON Schema
 
 See `src/schema.json`
