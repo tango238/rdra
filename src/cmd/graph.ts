@@ -201,7 +201,7 @@ digraph {
   {rank = same; ${activityUsedBy.map(a => `"${a.activity_actor}"`).join(';')}}
 }`
 
-  console.log(code)
+  // console.log(code)
   fs.writeFileSync(`output/wf_${buc.name}.svg`, vizRenderStringSync(code))
 }
 
