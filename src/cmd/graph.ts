@@ -13,6 +13,7 @@ import { Actor } from '../model/actor/Actor'
 import { ExternalActor } from '../model/actor/ExternalActor'
 import { Usecase } from '../model/usecase/Usecase'
 import { Information } from '../model/information/Information'
+import { node, ViewType, InformationType, ConditionType } from './constant'
 
 export const command = 'graph [value]'
 export const desc = 'Generate relational graphs'
@@ -211,13 +212,13 @@ const outputUsecase = (usecase: Usecase, names: string[]) => {
   const ucs = usecase.instances.filter(uc => names.includes(uc.name))
 
   // uc -> view
-  const view = [...new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"view_${view}" [label = "${view}", shape = tab, style="filled", fillcolor = "#90ee90"];`)))]
+  const view = [...new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => node(`view_${view}`, view, ViewType))))]
   const ucView = [...new Set(ucs.filter(uc => uc.view).flatMap(uc => uc.view?.map(view => `"${uc.name}" -> "view_${view}" [dir = none];`)))]
   // uc -> information
-  const info = [...new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"info_${info}" [label = "${info}", shape = note, style="filled", fillcolor = "#f5f5f5"];`)))]
+  const info = [...new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => node(`info_${info}`, info, InformationType))))]
   const ucInfo = [...new Set(ucs.filter(uc => uc.information).flatMap(uc => uc.information?.map(info => `"${uc.name}" -> "info_${info}" [dir = none];`)))]
   // uc -> condition
-  const cond = [...new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"cond_${cond}" [label = "${cond}", shape = underline, style="filled", fillcolor = "#87cefa"];`)))]
+  const cond = [...new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => node(`cond_${cond}`,  cond, ConditionType))))]
   const ucCond = [...new Set(ucs.filter(uc => uc.condition).flatMap(uc => uc.condition?.map(cond => `"${uc.name}" -> "cond_${cond}" [dir = none];`)))]
 
   return heredoc`
