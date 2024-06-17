@@ -8,7 +8,13 @@ import { Variation } from './variation/Variation'
 import { Condition } from './condition/Condition'
 import { StateTransition } from './state/StateTransition'
 import { Business } from './business/Business'
-import { JsonSchema } from './JsonSchema'
+import {
+  JsonSchema,
+  JsonSchemaActor, JsonSchemaBusiness, JsonSchemaCondition,
+  JsonSchemaExternalActor,
+  JsonSchemaInformation,
+  JsonSchemaOverview, JsonSchemaState, JsonSchemaUsecase, JsonSchemaVariation
+} from './JsonSchema'
 
 export type ErrorReport = string[]
 
@@ -27,7 +33,40 @@ export type RelationalModel = {
 
 export class RDRA {
 
-  resolve(source: JsonSchema): RelationalModel {
+  private _overview: Overview
+  private _actor: Actor
+
+  constructor(overview: Overview, actor: Actor) {
+    this._overview = overview
+    this._actor = actor
+  }
+
+  get overview(): Overview {
+    return this._overview
+  }
+
+  get actor(): Actor {
+    return this._actor
+  }
+
+  toJSON(): JsonSchema {
+    return {
+      overview: {
+        business: this._overview.business,
+        system: this._overview.system,
+      },
+      actor: this._actor.toJSON(),
+      external_actor: [],
+      information: [],
+      usecase: [],
+      business: [],
+      state: [],
+      variation: [],
+      condition: [],
+    }
+  }
+
+  static resolve(source: JsonSchema): RelationalModel {
     const overview = Overview.resolve(source.overview)
 
     // --------------------------------------

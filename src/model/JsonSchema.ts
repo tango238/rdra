@@ -37,7 +37,6 @@ export type JsonSchemaInformationValue = {
   variation?: string
 }
 
-
 export type JsonSchemaUsecase = {
   name: string
   view: string[] | null

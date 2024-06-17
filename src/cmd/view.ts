@@ -1,11 +1,9 @@
 import { BaseBuilder, BaseHandler } from './util/types'
 import { checkFileExists, getSourcePath } from './util/options'
 import { Yaml } from '../util/Yaml'
-import { br, error, info, title } from './output/console'
+import { error } from './output/console'
 import { RDRA } from '../model/RDRA'
 import { ErrorCollector } from '../util/ErrorCollector'
-import tableB, { table } from 'table-b'
-import invariant from 'tiny-invariant'
 import { outputAllView } from './output/view'
 
 export const command = 'view [value]'
@@ -42,8 +40,7 @@ export const handler: BaseHandler = async (argv) => {
   }
 
   // RDRA Model
-  const rdra = new RDRA()
-  const model = rdra.resolve(input)
+  const model = RDRA.resolve(input)
   errors = ErrorCollector.collect(model)
   if (errors.length > 0) {
     errors.forEach(err => {

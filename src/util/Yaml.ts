@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as schema from '../schema.json'
 import * as YAML from 'yaml'
 import Ajv, { ValidateFunction } from 'ajv/dist/2020'
+import { JsonSchema } from '../model/JsonSchema'
 
 export class Yaml {
 
@@ -15,6 +16,11 @@ export class Yaml {
   load(sourcePath: string): any  {
     const source = fs.readFileSync(sourcePath, 'utf-8')
     return YAML.parse(source)
+  }
+
+  static export(output: string, source: JsonSchema): void {
+    const content = YAML.stringify(source)
+    fs.writeFileSync(output, content)
   }
 
   validate(input: any): string[] {

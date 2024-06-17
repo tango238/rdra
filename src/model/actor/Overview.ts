@@ -12,6 +12,10 @@ export class Overview {
     this._system = system
   }
 
+  static create(business: string, system: string): Overview {
+    return new Overview(business, system)
+  }
+
   static resolve(source: JsonSchemaOverview): Overview {
     return new Overview(source.business, source.system)
   }

@@ -39,8 +39,7 @@ export const handler: UcHandler = async (argv) => {
   }
 
   // RDRA Model
-  const rdra = new RDRA()
-  const model = rdra.resolve(input)
+  const model = RDRA.resolve(input)
   errors = ErrorCollector.collect(model)
   if (errors.length > 0) {
     console.log(errors)

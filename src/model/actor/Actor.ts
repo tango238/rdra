@@ -14,8 +14,23 @@ export class Actor {
     this._instances = instances
   }
 
+  public toJSON(): (JsonSchemaActor | string)[] {
+    return this._instances.map(it => {
+      if (it.description == undefined) return it.name
+      return {
+        name: it.name,
+        description: it.description
+      }
+    })
+  }
+
+  static create(args : { name: string, description?: string}[]): Actor {
+    const instances = args.map(it => new ActorInstance(it.name, it.description))
+    return new Actor(instances)
+  }
+
   static resolve(source: JsonSchemaActor[]): Actor {
-    const actor = new Actor(source.map(it => new ActorInstance(it.name, it.description ?? null)))
+    const actor = new Actor(source.map(it => new ActorInstance(it.name, it.description ?? undefined)))
     const counted = actor._names.countValues()
     counted.forEach((value, key) => {
       if (value > 1) actor._errors.push(`アクター[${key}]が重複しています。`)
@@ -44,9 +59,9 @@ export class Actor {
 
 export class ActorInstance {
   private readonly _name: string
-  private readonly _description: string | null
+  private readonly _description?: string
 
-  constructor(name: string, description: string | null) {
+  constructor(name: string, description?: string) {
     this._name = name
     this._description = description
   }
@@ -55,7 +70,7 @@ export class ActorInstance {
     return this._name
   }
 
-  get description(): string | null {
+  get description(): string | undefined {
     return this._description
   }
 }
