@@ -30,16 +30,15 @@ export const handler: UcHandler = async (argv) => {
   let errors = []
 
   // Parse YAML
-  const yaml = new Yaml()
-  const input = yaml.load(sourcePath)
-  errors = yaml.validate(input)
+  const yaml = new Yaml(sourcePath)
+  errors = yaml.validate()
   if (errors.length > 0) {
     console.log(errors)
     process.exit(1)
   }
 
   // RDRA Model
-  const model = RDRA.resolve(input)
+  const model = yaml.getModel()
   errors = ErrorCollector.collect(model)
   if (errors.length > 0) {
     console.log(errors)

@@ -1,6 +1,5 @@
 import { BaseBuilder, BaseHandler } from './util/types'
 import * as fs from 'fs'
-import { info } from './output/console'
 import { initialize } from './commands/initialize'
 
 export const command = 'init'
@@ -17,5 +16,4 @@ export const handler: BaseHandler = async (argv) => {
   }
 
   initialize(path)
-  info(`File generated: ${path}`)
 }

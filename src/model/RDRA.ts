@@ -8,13 +8,7 @@ import { Variation } from './variation/Variation'
 import { Condition } from './condition/Condition'
 import { StateTransition } from './state/StateTransition'
 import { Business } from './business/Business'
-import {
-  JsonSchema,
-  JsonSchemaActor, JsonSchemaBusiness, JsonSchemaCondition,
-  JsonSchemaExternalActor,
-  JsonSchemaInformation,
-  JsonSchemaOverview, JsonSchemaState, JsonSchemaUsecase, JsonSchemaVariation
-} from './JsonSchema'
+import { JsonSchema } from './JsonSchema'
 
 export type ErrorReport = string[]
 
@@ -39,6 +33,25 @@ export class RDRA {
   constructor(overview: Overview, actor: Actor) {
     this._overview = overview
     this._actor = actor
+  }
+
+  static from(model: RelationalModel): RDRA {
+    return new RDRA(model.overview, model.actor)
+  }
+
+  addActor(name: string, description?: string): string [] {
+    this._actor = this._actor.add(name, description)
+    return this._actor.errors
+  }
+
+  updateActor(oldName: string, newName: string, description?: string): string [] {
+    this._actor = this._actor.update(oldName, newName, description)
+    return this._actor.errors
+  }
+
+  deleteActor(name: string): string [] {
+    this._actor = this._actor.delete(name)
+    return this._actor.errors
   }
 
   get overview(): Overview {

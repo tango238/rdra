@@ -29,6 +29,33 @@ export class Actor {
     return new Actor(instances)
   }
 
+  add(name: string, description?: string) {
+    if (this._names.includes(name)) {
+      this._errors.push(`アクター[${name}]が重複しています。`)
+      return this
+    }
+
+    const newInstance = new ActorInstance(name, description)
+    const instances = this._instances
+    instances.push(newInstance)
+    return new Actor(instances)
+  }
+
+  update(oldName: string, newName: string, description?: string) {
+    const newInstances = this._instances.map(it => {
+      if (it.name == oldName) {
+        return new ActorInstance(newName, description)
+      }
+      return new ActorInstance(it.name, it.description)
+    })
+    return new Actor(newInstances)
+  }
+
+  delete(name: string) {
+    const newInstances = this._instances.filter(it => it.name != name)
+    return new Actor(newInstances)
+  }
+
   static resolve(source: JsonSchemaActor[]): Actor {
     const actor = new Actor(source.map(it => new ActorInstance(it.name, it.description ?? undefined)))
     const counted = actor._names.countValues()

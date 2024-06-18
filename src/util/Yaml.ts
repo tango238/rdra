@@ -3,19 +3,18 @@ import * as schema from '../schema.json'
 import * as YAML from 'yaml'
 import Ajv, { ValidateFunction } from 'ajv/dist/2020'
 import { JsonSchema } from '../model/JsonSchema'
+import { RDRA, RelationalModel } from '../model/RDRA'
 
 export class Yaml {
 
   private readonly _validate: ValidateFunction
+  private readonly _source: any
 
-  constructor() {
+  constructor(sourcePath: string) {
     const ajv = new Ajv({ allowUnionTypes: true })
     this._validate = ajv.compile(schema)
-  }
-
-  load(sourcePath: string): any  {
     const source = fs.readFileSync(sourcePath, 'utf-8')
-    return YAML.parse(source)
+    this._source = YAML.parse(source)
   }
 
   static export(output: string, source: JsonSchema): void {
@@ -23,8 +22,8 @@ export class Yaml {
     fs.writeFileSync(output, content)
   }
 
-  validate(input: any): string[] {
-    this._validate(input)
+  validate(): string[] {
+    this._validate(this._source)
 
     let errors:string[] = []
     if (this._validate.errors) {
@@ -33,5 +32,9 @@ export class Yaml {
       })
     }
     return errors
+  }
+
+  getModel() : RelationalModel{
+    return RDRA.resolve(this._source)
   }
 }
