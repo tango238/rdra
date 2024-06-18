@@ -2,6 +2,7 @@ import { input } from '@inquirer/prompts'
 import { Yaml } from '../../../util/Yaml'
 import { RDRA } from '../../../model/RDRA'
 import { list } from './list'
+import { ErrorCollector } from '../../../util/ErrorCollector'
 
 export const updateActor = async (sourcePath: string) => {
   const selected = await list(sourcePath)
@@ -14,13 +15,12 @@ export const updateActor = async (sourcePath: string) => {
 
   const yaml = new Yaml(sourcePath)
   const rdra = RDRA.from(yaml.getModel())
-  const errors = rdra.updateActor(selected, newName, newDescription)
-  if (errors.length > 0) {
-    errors.forEach((error) => {
-      console.log(error)
-    })
-    return
-  }
-  Yaml.export(sourcePath, rdra.toJSON())
+  rdra.updateActor(selected, newName, newDescription)
+
+  const json = rdra.toJSON()
+  const err = ErrorCollector.printJsonErrors(json)
+  if (err) return
+
+  Yaml.export(sourcePath, json)
   console.log('Actorを更新しました。名前:' + newName, '説明:' + newDescription)
 }

@@ -39,19 +39,16 @@ export class RDRA {
     return new RDRA(model.overview, model.actor)
   }
 
-  addActor(name: string, description?: string): string [] {
+  addActor(name: string, description?: string) {
     this._actor = this._actor.add(name, description)
-    return this._actor.errors
   }
 
-  updateActor(oldName: string, newName: string, description?: string): string [] {
+  updateActor(oldName: string, newName: string, description?: string) {
     this._actor = this._actor.update(oldName, newName, description)
-    return this._actor.errors
   }
 
-  deleteActor(name: string): string [] {
+  deleteActor(name: string) {
     this._actor = this._actor.delete(name)
-    return this._actor.errors
   }
 
   get overview(): Overview {

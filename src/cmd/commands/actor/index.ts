@@ -1,6 +1,6 @@
 import { createActor } from './create'
 import select from '@inquirer/select'
-import { exit, selectMenu } from '../../command'
+import { selectMenu } from '../../command'
 import { Yaml } from '../../../util/Yaml'
 import { Actor } from '../../../model/actor/Actor'
 import { showActor } from './show'

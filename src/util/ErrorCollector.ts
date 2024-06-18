@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { RelationalModel } from '../model/RDRA'
+import { RDRA, RelationalModel } from '../model/RDRA'
 import { Actor } from '../model/actor/Actor'
 import { ExternalActor } from '../model/actor/ExternalActor'
 import { State } from '../model/state/State'
@@ -9,8 +9,23 @@ import { Variation } from '../model/variation/Variation'
 import { Condition } from '../model/condition/Condition'
 import { Business } from '../model/business/Business'
 import { Usecase } from '../model/usecase/Usecase'
+import { JsonSchema } from '../model/JsonSchema'
+import { error } from '../cmd/output/console'
 
 export class ErrorCollector {
+
+  static printJsonErrors(json: JsonSchema): boolean {
+    const model = RDRA.resolve(json)
+    const errors = ErrorCollector.collect(model)
+    if (errors.length > 0) {
+      errors.forEach(err => {
+        error(err + '\n')
+      })
+      return true
+    }
+    // no errors
+    return false
+  }
 
   static collect(model: RelationalModel): string[] {
     let errors: string[] = []

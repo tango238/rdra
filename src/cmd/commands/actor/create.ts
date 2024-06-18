@@ -1,6 +1,7 @@
 import { input } from '@inquirer/prompts'
 import { Yaml } from '../../../util/Yaml'
 import { RDRA } from '../../../model/RDRA'
+import { ErrorCollector } from '../../../util/ErrorCollector'
 
 export const createActor = async (sourcePath: string) => {
   const name = await input({ message: '名前を入力してください' }, { clearPromptOnDone: true })
@@ -8,13 +9,12 @@ export const createActor = async (sourcePath: string) => {
 
   const yaml = new Yaml(sourcePath)
   const rdra = RDRA.from(yaml.getModel())
-  const errors = rdra.addActor(name, description)
-  if (errors.length > 0) {
-    errors.forEach((error) => {
-      console.log(error)
-    })
-    return
-  }
-  Yaml.export(sourcePath, rdra.toJSON())
+  rdra.addActor(name, description)
+
+  const json = rdra.toJSON();
+  const err = ErrorCollector.printJsonErrors(json)
+  if (err) return
+
+  Yaml.export(sourcePath, json)
   console.log('Actorを追加しました。名前:' + name, '説明:' + description)
 }
