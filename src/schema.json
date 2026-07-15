@@ -26,6 +26,12 @@
         "$ref": "#/$defs/Information"
       }
     },
+    "view": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/View"
+      }
+    },
     "state": {
       "type": "array",
       "items": {
@@ -156,6 +162,19 @@
       "required": [
         "name"
       ]
+    },
+    "View": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": ["name"]
     },
     "State": {
       "type": "object",

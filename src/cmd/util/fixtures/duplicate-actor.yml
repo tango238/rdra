@@ -1,0 +1,7 @@
+overview:
+  business: xxx会社
+  system: 出退勤管理システム
+
+actor:
+  - 社員
+  - 社員

@@ -5,6 +5,7 @@ export type JsonSchema = {
   information: JsonSchemaInformation[]
   usecase: JsonSchemaUsecase[] | null
   business: JsonSchemaBusiness[] | null
+  view: (JsonSchemaView | string)[] | null
   state: JsonSchemaState[] | null
   variation: JsonSchemaVariation[] | null
   condition: JsonSchemaCondition[] | null
@@ -60,6 +61,10 @@ export type SourceActivityJSON = {
   name: string
   used_by: string[]
   usecase: string[]
+}
+
+export type JsonSchemaView = {
+  name: string
 }
 
 export type JsonSchemaState = {

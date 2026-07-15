@@ -36,9 +36,7 @@ export class Actor {
     }
 
     const newInstance = new ActorInstance(name, description)
-    const instances = this._instances
-    instances.push(newInstance)
-    return new Actor(instances)
+    return new Actor([...this._instances, newInstance])
   }
 
   update(oldName: string, newName: string, description?: string) {

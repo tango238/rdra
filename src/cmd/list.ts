@@ -1,10 +1,7 @@
 import chalk from 'chalk'
 import { BaseBuilder, BaseHandler } from './util/types'
-import { Yaml } from '../util/Yaml'
-import { RDRA } from '../model/RDRA'
-import { ErrorCollector } from '../util/ErrorCollector'
-import { title, info, br, error } from './output/console'
-import { checkFileExists, getSourcePath } from './util/options'
+import { createSourceBuilder, loadValidatedModel } from './util/model'
+import { title, info, br } from './output/console'
 import { outputAllActors } from './output/actor'
 import { outputAllUseCases } from './output/usecase'
 import { outputAllState } from './output/state'
@@ -14,43 +11,12 @@ export const command = 'list [value]'
 export const desc = 'List all items in the model'
 
 
-export const builder: BaseBuilder = (yargs) =>
-  yargs
-    .options({
-      file: { type: 'string', alias: 'f', conflicts: 'value' }
-    })
-    .positional('value', { type: 'string' })
-    .check((argv, _options) => {
-      const { file, value } = argv
-      checkFileExists(file, value)
-      return argv
-    })
+export const builder: BaseBuilder = (yargs) => createSourceBuilder(yargs)
 
 
 export const handler: BaseHandler = async (argv) => {
   const { file, value } = argv
-  const sourcePath = getSourcePath(file, value)
-  let errors = []
-
-  // Parse YAML
-  const yaml = new Yaml(sourcePath)
-  errors = yaml.validate()
-  if (errors.length > 0) {
-    errors.forEach(err => {
-      error(err)
-    })
-    process.exit(1)
-  }
-
-  // RDRA Model
-  const model = yaml.getModel()
-  errors = ErrorCollector.collect(model)
-  if (errors.length > 0) {
-    errors.forEach(err => {
-      error(err)
-    })
-    process.exit(1)
-  }
+  const { model } = loadValidatedModel(file, value)
 
   // ------------------------------
   // Actor

@@ -1,4 +1,3 @@
-import invariant from 'tiny-invariant'
 import { RDRA, RelationalModel } from '../model/RDRA'
 import { Actor } from '../model/actor/Actor'
 import { ExternalActor } from '../model/actor/ExternalActor'
@@ -28,53 +27,21 @@ export class ErrorCollector {
   }
 
   static collect(model: RelationalModel): string[] {
-    let errors: string[] = []
-    if (this.hasError(model.actor)) {
-      errors.push(...model.actor.errors)
-    }
-    if (this.notNullAndHasError(model.externalActor)) {
-      invariant(model.externalActor)
-      errors.push(...model.externalActor.errors)
-    }
-    if (this.notNullAndHasError(model.information)) {
-      invariant(model.information)
-      errors.push(...model.information.errors)
-    }
-    if (this.notNullAndHasError(model.state)) {
-      invariant(model.state)
-      errors.push(...model.state.errors)
-    }
-    if (this.notNullAndHasError(model.transition)) {
-      invariant(model.transition)
-      errors.push(...model.transition.errors)
-    }
-    if (this.notNullAndHasError(model.variation)) {
-      invariant(model.variation)
-      errors.push(...model.variation.errors)
-    }
-    if (this.notNullAndHasError(model.condition)) {
-      invariant(model.condition)
-      errors.push(...model.condition.errors)
-    }
-    if (this.notNullAndHasError(model.business)) {
-      invariant(model.business)
-      errors.push(...model.business.errors)
-    }
-    if (this.notNullAndHasError(model.usecase)) {
-      invariant(model.usecase)
-      errors.push(...model.usecase.errors)
-    }
+    const sources: (Actor | ExternalActor | Information | State | StateTransition | Variation | Condition | Business | Usecase | null)[] = [
+      model.actor,
+      model.externalActor,
+      model.information,
+      model.state,
+      model.transition,
+      model.variation,
+      model.condition,
+      model.business,
+      model.usecase,
+    ]
 
-    return errors
-  }
-
-  private static notNullAndHasError(source: ExternalActor | Information| Business | Variation | Condition | Usecase | State | StateTransition | null): boolean {
-    if (source == null) return false
-    return source.errors.length > 0
-  }
-
-  private static hasError(source: Actor): boolean {
-    return source.errors.length > 0
+    return sources
+      .filter((source): source is Exclude<typeof source, null> => source != null)
+      .flatMap(source => source.errors)
   }
 
 }

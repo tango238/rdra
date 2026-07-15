@@ -70,6 +70,7 @@ export class RDRA {
       information: [],
       usecase: [],
       business: [],
+      view: [],
       state: [],
       variation: [],
       condition: [],
