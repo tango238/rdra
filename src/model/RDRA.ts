@@ -66,7 +66,7 @@ export class RDRA {
         system: this._overview.system,
       },
       actor: this._actor.toJSON(),
-      external_actor: [],
+      external_system: [],
       information: [],
       usecase: [],
       business: [],
@@ -86,9 +86,11 @@ export class RDRA {
     const srcActor = source.actor.map(actor => typeof actor == "object" ? actor : { name: actor })
     const actor = Actor.resolve(srcActor)
 
+    // external_system が公式RDRAの用語。external_actor は後方互換のための旧称。
     let externalActor = null
-    if (source.external_actor) {
-      const srcExternal = source.external_actor.map(external => typeof external == "object" ? external : { name: external })
+    const srcExternal = [...(source.external_system ?? []), ...(source.external_actor ?? [])]
+      .map(external => typeof external == "object" ? external : { name: external })
+    if (srcExternal.length > 0) {
       externalActor = ExternalActor.resolve(srcExternal)
     }
 
