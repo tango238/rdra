@@ -16,8 +16,17 @@
     },
     "external_actor": {
       "type": "array",
+      "deprecated": true,
+      "description": "Deprecated: use external_system. Kept for backward compatibility.",
       "items": {
         "$ref": "#/$defs/ExternalActor"
+      }
+    },
+    "external_system": {
+      "type": "array",
+      "description": "外部システム (RDRA: システム価値レイヤーの外部システム)",
+      "items": {
+        "$ref": "#/$defs/ExternalSystem"
       }
     },
     "information": {
@@ -104,6 +113,24 @@
       ]
     },
     "ExternalActor": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
+    "ExternalSystem": {
       "type": [
         "object",
         "string"
@@ -322,6 +349,7 @@
       },
       "additionalProperties": false,
       "required": [
+        "name",
         "main_actor"
       ]
     },
@@ -446,6 +474,37 @@
           "required": [
             "name",
             "timer",
+            "information"
+          ]
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "event": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "information": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "condition": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "event",
             "information"
           ]
         }

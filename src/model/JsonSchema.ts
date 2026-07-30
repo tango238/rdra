@@ -1,7 +1,9 @@
 export type JsonSchema = {
   overview: JsonSchemaOverview
   actor: (JsonSchemaActor | string)[]
-  external_actor: (JsonSchemaExternalActor | string)[] | null
+  /** @deprecated use external_system */
+  external_actor?: (JsonSchemaExternalActor | string)[] | null
+  external_system?: (JsonSchemaExternalSystem | string)[] | null
   information: JsonSchemaInformation[]
   usecase: JsonSchemaUsecase[] | null
   business: JsonSchemaBusiness[] | null
@@ -26,6 +28,11 @@ export type JsonSchemaExternalActor = {
   description?: string | null
 }
 
+export type JsonSchemaExternalSystem = {
+  name: string
+  description?: string | null
+}
+
 export type JsonSchemaInformation = {
   context: string
   value: JsonSchemaInformationValue[]
@@ -40,10 +47,11 @@ export type JsonSchemaInformationValue = {
 
 export type JsonSchemaUsecase = {
   name: string
-  view: string[] | null
+  view?: string[] | null
+  timer?: string[] | null
+  event?: string[] | null
   information: string[]
-  condition: string[]
-  // event: string[]
+  condition?: string[] | null
 }
 
 export type JsonSchemaBusiness = {

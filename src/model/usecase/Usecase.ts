@@ -57,19 +57,33 @@ export class Usecase {
 class UsecaseInstance {
   private readonly _name: string
   private readonly _view: string[] | null
+  private readonly _timer: string[] | null
+  private readonly _event: string[] | null
   private readonly _information: string[]
   private readonly _condition: string[] | null
   private readonly _errors: ErrorReport = []
 
-  constructor(name: string, view: string[] | null, information: string[], condition: string[] | null) {
+  constructor(name: string, view: string[] | null, timer: string[] | null, event: string[] | null, information: string[], condition: string[] | null) {
     this._name = name
     this._view = view
+    this._timer = timer
+    this._event = event
     this._information = information
     this._condition = condition
   }
 
-  static resolve(source: { name: string, view: string[] | null, information: string[], condition: string[] }, information: Information | null, condition: Condition | null) {
-    const instance = new UsecaseInstance(source.name, source.view, source.information, source.condition)
+  static resolve(source: JsonSchemaUsecase, information: Information | null, condition: Condition | null) {
+    const instance = new UsecaseInstance(
+      source.name,
+      source.view ?? null,
+      source.timer ?? null,
+      source.event ?? null,
+      source.information,
+      source.condition ?? null
+    )
+    if (!instance._view && !instance._timer && !instance._event) {
+      instance._errors.push(`ユースケース[${instance._name}]には画面(view)、タイマー(timer)、イベント(event)のいずれかが必要です。`)
+    }
     if (instance._information) {
       if (!information) {
         instance._errors.push(`情報[${instance._information}]が未定義です。`)
@@ -97,6 +111,14 @@ class UsecaseInstance {
 
   get view(): string[] | null {
     return this._view
+  }
+
+  get timer(): string[] | null {
+    return this._timer
+  }
+
+  get event(): string[] | null {
+    return this._event
   }
 
   get information(): string[] {

@@ -8,6 +8,7 @@ const minimalSource = (): JsonSchema => ({
   overview,
   actor: [{ name: 'actor1' }],
   external_actor: null,
+  external_system: null,
   information: [],
   usecase: null,
   business: null,
@@ -20,7 +21,8 @@ const minimalSource = (): JsonSchema => ({
 const fullSource = (): JsonSchema => ({
   overview,
   actor: [{ name: 'actor1' }],
-  external_actor: [{ name: 'external1' }],
+  external_actor: null,
+  external_system: [{ name: 'external1' }],
   information: [{ context: 'ctx1', value: [{ name: 'info1' }] }],
   usecase: [{ name: 'usecase1', view: ['view1'], information: ['info1'], condition: ['condition1'] }],
   business: [{ name: 'business1', main_actor: ['actor1'], buc: [] }],
@@ -69,7 +71,7 @@ test('toJSON', () => {
   expect(rdra.toJSON()).toEqual({
     overview,
     actor: [{ name: 'actor1', description: 'desc1' }, 'actor2'],
-    external_actor: [],
+    external_system: [],
     information: [],
     usecase: [],
     business: [],
@@ -78,6 +80,46 @@ test('toJSON', () => {
     variation: [],
     condition: [],
   })
+})
+
+test('resolve - external_actor (deprecated) and external_system are merged', () => {
+  const model = RDRA.resolve({
+    ...minimalSource(),
+    external_actor: ['legacy1'],
+    external_system: [{ name: 'external1' }],
+  })
+
+  expect(model.externalActor?.names).toEqual(['external1', 'legacy1'])
+  expect(model.externalActor?.errors.length).toBe(0)
+})
+
+test('resolve - usecase triggered by timer resolves without error', () => {
+  const model = RDRA.resolve({
+    ...fullSource(),
+    usecase: [{ name: 'usecase1', timer: ['timer1'], information: ['info1'] }],
+  })
+
+  expect(model.usecase?.errors.length).toBe(0)
+  expect(model.usecase?.load('usecase1').timer).toEqual(['timer1'])
+})
+
+test('resolve - usecase triggered by event resolves without error', () => {
+  const model = RDRA.resolve({
+    ...fullSource(),
+    usecase: [{ name: 'usecase1', event: ['event1'], information: ['info1'] }],
+  })
+
+  expect(model.usecase?.errors.length).toBe(0)
+  expect(model.usecase?.load('usecase1').event).toEqual(['event1'])
+})
+
+test('resolve - usecase without view/timer/event produces an error', () => {
+  const model = RDRA.resolve({
+    ...fullSource(),
+    usecase: [{ name: 'usecase1', information: ['info1'] }],
+  })
+
+  expect(model.usecase?.errors.length).toBe(1)
 })
 
 test('addActor', () => {
